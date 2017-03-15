@@ -10,11 +10,13 @@ classdef Genetic_Algorithm < handle
         
         population;
         fitness_history;
+        chromosome_history;
+        
+        chromosome_multiplier;
+        chromosome_adder;
     end
     methods(Static)
-        function fitness = fitness_func( chromosome )
-            
-            
+        function fitness = hartmann_6(chromosome) 
             %   hartman-6-dim-func
             %   f[0.20169,0.150011,0.476874,0.275332,0.311652,0.6573] =  3.0425
             %
@@ -45,7 +47,67 @@ classdef Genetic_Algorithm < handle
             y = -(2.58 + outer) / 1.94;
             
             fitness = -y;
+        end
+        
+        function fitness = branin(chromosome)
             
+%             f[9.42478,2.475] = 0.397887
+%             f[-pi,12.275] = 0.397887
+%             f[pi,2.275] = 0.397887
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %
+            % INPUTS:
+            %
+            % xx = [x1, x2]
+            % a = constant (optional), with default value 1
+            % b = constant (optional), with default value 5.1/(4*pi^2)
+            % c = constant (optional), with default value 5/pi
+            % r = constant (optional), with default value 6
+            % s = constant (optional), with default value 10
+            % t = constant (optional), with default value 1/(8*pi)
+            %
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            x1 = chromosome(1);
+            x2 = chromosome(2);
+
+            if (nargin < 7)
+                t = 1 / (8*pi);
+            end
+            if (nargin < 6)
+                s = 10;
+            end
+            if (nargin < 5)
+                r = 6;
+            end
+            if (nargin < 4)
+                c = 5/pi;
+            end
+            if (nargin < 3)
+                b = 5.1 / (4*pi^2);
+            end
+            if (nargin < 2)
+                a = 1;
+            end
+
+            term1 = a * (x2 - b*x1^2 + c*x1 - r)^2;
+            term2 = s*(1-t)*cos(x1);
+
+            y = term1 + term2 + s;
+            fitness = -y;
+            end
+            
+        
+        function fitness = fitness_func( chromosome, mul, add )
+            
+            
+%             fitness = Genetic_Algorithm.hartmann_6(chromosome);
+            
+            corr_chroms = chromosome .* mul + add;
+            
+
+            fitness = Genetic_Algorithm.branin(corr_chroms);
             
             
             
@@ -87,7 +149,7 @@ classdef Genetic_Algorithm < handle
     end
     
     methods
-        function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size)
+        function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,chromosome_multiplier, chromosome_adder)
             obj.chromosome_len   = chromosome_len;
             obj.population_size  = population_size;
             obj.crossover_ratio  = crossover_ratio;
@@ -95,6 +157,10 @@ classdef Genetic_Algorithm < handle
             obj.elitism_ratio    = elitism_ratio;
             obj.chromosome_split = chromosome_len * chromosome_split;
             obj.iteration_size   = iteration_size;
+            obj.chromosome_history = zeros(population_size, chromosome_len);
+            
+            obj.chromosome_multiplier = chromosome_multiplier ;
+            obj.chromosome_adder = chromosome_adder ;
             
             obj.population = struct('chromosomes', zeros(population_size,chromosome_len), 'fitnesses', zeros(population_size,1));
             obj.create_population();
@@ -123,6 +189,7 @@ classdef Genetic_Algorithm < handle
                 obj.calculate_fitnesses()
                 obj.sort_by_field()
                 obj.fitness_history(iter) = obj.population.fitnesses(1);
+                obj.chromosome_history(iter,:) = obj.population.chromosomes(1,:);
             end
         end
         
@@ -136,7 +203,7 @@ classdef Genetic_Algorithm < handle
         function [] = calculate_fitnesses(obj)
             %   calculate fitnesses
             for i = 1:obj.population_size
-                obj.population.fitnesses(i) = Genetic_Algorithm.fitness_func(obj.population.chromosomes(i,:));
+                obj.population.fitnesses(i) = Genetic_Algorithm.fitness_func(obj.population.chromosomes(i,:), obj.chromosome_multiplier, obj.chromosome_adder);
             end
         end
         
