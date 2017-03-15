@@ -45,10 +45,10 @@ for i = 1:size(chrom_hist_sum,1)
     chrom_hist_weight(i) = size([find(chrom_hist_sum(i) == chrom_hist_sum)],1);
 end
 
-file_str = strcat('plots\plot',datestr(datetime('now')),'.fig');
+file_str = strcat('plots\plot',datestr(datetime('now')));
 file_str = strrep(file_str, ':', '_');
 file_str = strrep(file_str, '-', '_');
-savefig(fig_plot,file_str)
+print(fig_plot,file_str,'-dpng')
 
 fig_scatter = figure
 scatter(chrom_hist(:,1),chrom_hist(:,2),chrom_hist_weight*10)
@@ -56,10 +56,10 @@ title('Chromosome vs Weight')
 xlabel('chromosome 1')
 ylabel('chromosome 2')
 
-file_str = strcat('plots\scatter_',datestr(datetime('now')),'.fig');
+file_str = strcat('plots\scatter_',datestr(datetime('now')));
 file_str = strrep(file_str, ':', '_');
 file_str = strrep(file_str, '-', '_');
-savefig(fig_scatter,file_str)
+print(fig_scatter,file_str,'-dpng')
 
 
 
