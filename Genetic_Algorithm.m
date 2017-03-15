@@ -102,12 +102,13 @@ classdef Genetic_Algorithm < handle
         function fitness = fitness_func( chromosome, mul, add )
             
             
-%             fitness = Genetic_Algorithm.hartmann_6(chromosome);
+
             
             corr_chroms = chromosome .* mul + add;
             
 
-            fitness = Genetic_Algorithm.branin(corr_chroms);
+            fitness = Genetic_Algorithm.hartmann_6(corr_chroms);
+
             
             
             
