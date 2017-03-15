@@ -16,7 +16,7 @@ population_size  = 100;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.05;
 elitism_ratio = 0.02;
-chromosome_split = 0.5;
+chromosome_split = 0.5; % must be between [0,1]
 iteration_size = 100;
 
 chromosome_multiplier = [15,15];
