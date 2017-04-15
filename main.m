@@ -25,7 +25,7 @@ iteration_size = 100;
 % x3 > 1
 % x4 > 0
 % x5 > 1
-chromosome_multiplier = [20,20,20,20,20];
+chromosome_multiplier = [10,10,10,10,10];
 chromosome_adder = [3,0,1,0,1];
 % chromosome_multiplier = [1,1,1,1,1,1];
 % chromosome_adder = [0,0,0,0,0,0];
