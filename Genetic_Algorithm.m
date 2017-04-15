@@ -180,6 +180,18 @@ classdef Genetic_Algorithm < handle
             %             end
         end
         
+        function plot(obj)
+            % retrieve fitness_history
+            hold on
+            fit_hist = obj.fitness_history;
+            plot([1:length(fit_hist)],fit_hist, '--or');
+            title('Fitness history convergence diagram');
+            fittest_chrom = obj.population.chromosomes(1,:);
+            legend(strcat('fitness : ',num2str(fit_hist(length(fit_hist)))),...
+                strcat('fittest : ',num2str(fittest_chrom)),...
+                'Location', 'southeast');
+            drawnow;
+        end
         function run(obj)
             obj.calculate_fitnesses()
 
@@ -191,6 +203,7 @@ classdef Genetic_Algorithm < handle
                 obj.sort_by_field()
                 obj.fitness_history(iter) = obj.population.fitnesses(1);
                 obj.chromosome_history(iter,:) = obj.population.chromosomes(1,:);
+                obj.plot()
             end
         end
         
