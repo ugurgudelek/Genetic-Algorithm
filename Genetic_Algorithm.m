@@ -14,6 +14,8 @@ classdef Genetic_Algorithm < handle
         
         chromosome_multiplier;
         chromosome_adder;
+        is_constraints_satisfied;
+        
     end
     methods(Static)
         function fitness = hartmann_6(chromosome) 
@@ -101,32 +103,13 @@ classdef Genetic_Algorithm < handle
         
         function fitness = fitness_func( chromosome, mul, add )
             
-            
-
-            
+            %   set some contraints
             corr_chroms = chromosome .* mul + add;
             
-
+            %   calculate fitness values
+%             fitness = calculate_energy(corr_chroms);
             fitness = Genetic_Algorithm.hartmann_6(corr_chroms);
 
-            
-            
-            
-            
-            %             fitness = -((x-4).^2 + (y+3).^2);
-            %             fitness = -(0.26*(x.^2 + y.^2)- 0.48*x.*y + 32);
-            %             fitness = -(-cos(x)*cos(y)*exp(-((x-pi)^2 + (y-pi)^2)));
-            
-            %
-            %             fact1a = (x1 + x2 + 1)^2;
-            %             fact1b = 19 - 14*x1 + 3*x1^2 - 14*x2 + 6*x1*x2 + 3*x2^2;
-            %             fact1 = 1 + fact1a*fact1b;
-            %
-            %             fact2a = (2*x1 - 3*x2)^2;
-            %             fact2b = 18 - 32*x1 + 12*x1^2 + 48*x2 - 36*x1*x2 + 27*x2^2;
-            %             fact2 = 30 + fact2a*fact2b;
-            %
-            %             fitness = - fact1*fact2;
         end
         
         function [selection,roulette_arr] = roulette( roulette_arr )
@@ -146,11 +129,29 @@ classdef Genetic_Algorithm < handle
             end
         end
         
+%         function boolAns = is_constraints_satisfied(chromosome, mul, add)
+%             %   set predefined contraints
+%             chromosome = chromosome .* mul + add;
+%             
+%             x1 = chromosome(1);
+%             x2 = chromosome(2);
+%             x3 = chromosome(3);
+%             x4 = chromosome(4);
+%             x5 = chromosome(5);
+%             x6 = chromosome(6);
+%             
+%             boolAns = (x1 < 0.2) && (x2 < 1);
+% 
+%         end
+        
+        
         
     end
     
     methods
-        function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,chromosome_multiplier, chromosome_adder)
+%       constructor
+        function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,...
+                                            chromosome_multiplier, chromosome_adder,constraints_function)
             obj.chromosome_len   = chromosome_len;
             obj.population_size  = population_size;
             obj.crossover_ratio  = crossover_ratio;
@@ -158,7 +159,8 @@ classdef Genetic_Algorithm < handle
             obj.elitism_ratio    = elitism_ratio;
             obj.chromosome_split = chromosome_len * chromosome_split;
             obj.iteration_size   = iteration_size;
-            obj.chromosome_history = zeros(population_size, chromosome_len);
+            obj.is_constraints_satisfied = constraints_function;
+            
             
             obj.chromosome_multiplier = chromosome_multiplier ;
             obj.chromosome_adder = chromosome_adder ;
@@ -166,32 +168,24 @@ classdef Genetic_Algorithm < handle
             obj.population = struct('chromosomes', zeros(population_size,chromosome_len), 'fitnesses', zeros(population_size,1));
             obj.create_population();
         end
+    
         
-        
-        function [] = scatter(obj)
-            chroms = obj.population.chromosomes;
-            fits   = obj.population.fitnesses;
-            scatter3(chroms(:,1),chroms(:,2),fits,'.r');
-            %             scatter3(chromosome(1,1),chromosome(1,2),fitness);
-            %             for i = 1:obj.population_size
-            %                 chromosome = obj.population.chromosomes(i,:);
-            %                 fitness = obj.population.fitnesses(i);
-            %                 scatter3(chromosome(1,1),chromosome(1,2),fitness);
-            %             end
-        end
         
         function plot(obj)
             % retrieve fitness_history
             hold on
-            fit_hist = obj.fitness_history;
+            fit_hist = obj.fitness_history(:,1);
             plot([1:length(fit_hist)],fit_hist, '--or');
             title('Fitness history convergence diagram');
-            fittest_chrom = obj.population.chromosomes(1,:);
+            
             legend(strcat('fitness : ',num2str(fit_hist(length(fit_hist)))),...
-                strcat('fittest : ',num2str(fittest_chrom)),...
+                strcat('fittest 1 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1),1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
+                strcat('fittest 2 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1)-1,1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
+                strcat('fittest 3 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1)-2,1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
                 'Location', 'southeast');
             drawnow;
         end
+        
         function run(obj)
             obj.calculate_fitnesses()
 
@@ -201,7 +195,9 @@ classdef Genetic_Algorithm < handle
                 obj.mutation()
                 obj.calculate_fitnesses()
                 obj.sort_by_field()
-                obj.fitness_history(iter) = obj.population.fitnesses(1);
+                obj.fitness_history(iter,1) = obj.population.fitnesses(1);
+                obj.fitness_history(iter,2) = obj.population.fitnesses(2);
+                obj.fitness_history(iter,3) = obj.population.fitnesses(3);
                 obj.chromosome_history(iter,:) = obj.population.chromosomes(1,:);
                 obj.plot()
             end
@@ -210,7 +206,7 @@ classdef Genetic_Algorithm < handle
         function [] = create_population(obj)
             % create first generation
             for i = 1:obj.population_size
-                obj.population.chromosomes(i,:) = rand(obj.chromosome_len,1)';
+                obj.population.chromosomes(i,:) = obj.create_proper_random_chromosome(obj.chromosome_len, obj.chromosome_multiplier, obj.chromosome_adder);
             end
         end
         
@@ -231,8 +227,8 @@ classdef Genetic_Algorithm < handle
         function [] = elitism(obj)
             %   elitism
             obj.sort_by_field()
-            obj.population.chromosomes = obj.population.chromosomes(1:size(obj.population.chromosomes,1)/2,:);
-            obj.population.fitnesses = obj.population.fitnesses(1:size(obj.population.fitnesses,1)/2);
+            obj.population.chromosomes = obj.population.chromosomes(1:size(obj.population.chromosomes,1)*obj.elitism_ratio,:);
+            obj.population.fitnesses = obj.population.fitnesses(1:size(obj.population.fitnesses,1)*obj.elitism_ratio);
         end
         
         function [] = crossover(obj)
@@ -243,15 +239,19 @@ classdef Genetic_Algorithm < handle
                 roulette_arr(i) = (sum(obj.population.fitnesses(1:i-1)) + obj.population.fitnesses(i) ) / summ;
             end
             
-            next_gen = struct('chromosomes', zeros(obj.population_size,obj.chromosome_len), 'fitnesses', zeros(obj.population_size,1));
+            prev_pop_cnt = size(obj.population.fitnesses,1);
+            next_gen = struct('chromosomes', zeros(obj.population_size - prev_pop_cnt,obj.chromosome_len), 'fitnesses', zeros(obj.population_size - prev_pop_cnt,1));
             
-            mem_cnt = size(obj.population.fitnesses,1) + 1;
             
-            next_gen.chromosomes(1:mem_cnt-1,:) = obj.population.chromosomes;
-            next_gen.fitnesses(1:mem_cnt-1,:) = obj.population.fitnesses;
+            next_mem_count = prev_pop_cnt + 1;
+            
+            next_gen.chromosomes(1:next_mem_count-1,:) = obj.population.chromosomes;
+            next_gen.fitnesses(1:next_mem_count-1,:) = obj.population.fitnesses;
+            constraint_check_counter = 0;
             while true
                 if rand > (1-obj.crossover_ratio)
-                    if  size(roulette_arr,1) > 1
+                    if  size(roulette_arr,1) > 1 && ~isempty(roulette_arr) % only switch if we can find a pair
+                        save_roulette_arr = roulette_arr;
                         [idx_1,roulette_arr] = Genetic_Algorithm.roulette(roulette_arr);
                         roulette_arr = cat(1,roulette_arr(1:idx_1-1),roulette_arr(idx_1+1:size(roulette_arr,1)));
                         [idx_2,roulette_arr] = Genetic_Algorithm.roulette(roulette_arr);
@@ -265,14 +265,43 @@ classdef Genetic_Algorithm < handle
                         new_chromosome_1(obj.chromosome_split+1:obj.chromosome_len) = chromosome_2(obj.chromosome_split+1:obj.chromosome_len);
                         new_chromosome_2(obj.chromosome_split+1:obj.chromosome_len) = chromosome_1(obj.chromosome_split+1:obj.chromosome_len);
                         
-                        next_gen.chromosomes(mem_cnt,:) = new_chromosome_1;
-                        next_gen.chromosomes(mem_cnt+1,:) = new_chromosome_2;
-                        mem_cnt = mem_cnt + 2;
-                        
-                        if isempty(roulette_arr)
-                            break
+%                         check contraints. if new chromosomes do not
+%                         satisfy then drop them
+                        if ~(obj.is_constraints_satisfied(new_chromosome_1 .* obj.chromosome_multiplier + obj.chromosome_adder)...
+                                && obj.is_constraints_satisfied(new_chromosome_2 .* obj.chromosome_multiplier + obj.chromosome_adder))
+                            roulette_arr = save_roulette_arr; %get untouched roulette array back
+                            constraint_check_counter = constraint_check_counter + 1;
+%                             if we cannot find proper pair in given
+%                             time_check then choose pair randomly
+                            if constraint_check_counter > 10
+                                new_chromosome_1 = obj.create_proper_random_chromosome(obj.chromosome_len, obj.chromosome_multiplier, obj.chromosome_adder);
+                                new_chromosome_2 = obj.create_proper_random_chromosome(obj.chromosome_len, obj.chromosome_multiplier, obj.chromosome_adder);
+                            else
+                                continue
+                            end
                         end
+                        
+                        constraint_check_counter = 0;
+                        next_gen.chromosomes(next_mem_count,:) = new_chromosome_1;
+                        next_gen.chromosomes(next_mem_count+1,:) = new_chromosome_2;
+                        next_mem_count = next_mem_count + 2;
+                        
+
+                    elseif size(roulette_arr,1) == 1 && ~isempty(roulette_arr)
+%                         we cannot fill new population properly. Fill
+%                         last empty population randomly then.
+                        for i = 1:obj.population_size - size(next_gen.chromosomes,1)
+                            next_gen.chromosomes(next_mem_count,:) = obj.create_proper_random_chromosome(obj.chromosome_len, obj.chromosome_multiplier, obj.chromosome_adder);
+                            next_mem_count = next_mem_count + 1;
+                        end
+                        roulette_arr = [];
+                  
+                    else
+%                         size of rouletter array is 0 here
+                          break
                     end
+               
+                
                 end
             end
             
@@ -284,11 +313,30 @@ classdef Genetic_Algorithm < handle
             for i = 1:obj.population_size
                 for j = 1:obj.chromosome_len
                     if rand > (1-obj.mutation_ratio)
-                        obj.population.chromosomes(i,j) = rand;
+                        mutated = obj.population.chromosomes(i,:);
+                        mutated(j) = rand;
+%                         loop until mutated is satisfied too
+                        while ~obj.is_constraints_satisfied(mutated .* obj.chromosome_multiplier + obj.chromosome_adder)
+                            mutated(j) = rand;
+                        end
+                        obj.population.chromosomes(i,:) = mutated;
+     
                     end
                 end
             end
         end
+        
+        function chromosome = create_proper_random_chromosome(obj,chromosome_len, mul, add)
+%             create random chromosome
+            chromosome = rand(chromosome_len,1)';
+
+%             loop until find
+            while ~obj.is_constraints_satisfied(chromosome .* mul + add)
+                chromosome = rand(chromosome_len,1)';
+            end
+                       
+        end
+        
     end
     
     
