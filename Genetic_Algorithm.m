@@ -15,6 +15,7 @@ classdef Genetic_Algorithm < handle
         chromosome_multiplier;
         chromosome_adder;
         is_constraints_satisfied;
+        fitness_function;
         
     end
     methods(Static)
@@ -99,19 +100,7 @@ classdef Genetic_Algorithm < handle
             y = term1 + term2 + s;
             fitness = -y;
             end
-            
-        
-        function fitness = fitness_func( chromosome, mul, add )
-            
-            %   set some contraints
-            corr_chroms = chromosome .* mul + add;
-            
-            %   calculate fitness values
-%             fitness = calculate_energy(corr_chroms);
-            fitness = Genetic_Algorithm.hartmann_6(corr_chroms);
 
-        end
-        
         function [selection,roulette_arr] = roulette( roulette_arr )
             selection = 1;
             if ~isempty(roulette_arr)
@@ -151,7 +140,7 @@ classdef Genetic_Algorithm < handle
     methods
 %       constructor
         function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,...
-                                            chromosome_multiplier, chromosome_adder,constraints_function)
+                                            fitness_function, chromosome_multiplier, chromosome_adder,constraints_function)
             obj.chromosome_len   = chromosome_len;
             obj.population_size  = population_size;
             obj.crossover_ratio  = crossover_ratio;
@@ -159,9 +148,22 @@ classdef Genetic_Algorithm < handle
             obj.elitism_ratio    = elitism_ratio;
             obj.chromosome_split = chromosome_len * chromosome_split;
             obj.iteration_size   = iteration_size;
+            obj.fitness_function = fitness_function;
+                       
+%             default argument fix below
+            switch nargin
+                case 8
+                    chromosome_multiplier = ones(1,chromosome_len);
+                    chromosome_adder = zeros(1,chromosome_len);
+                    constraints_function = @(x)true;
+                case 9
+                    chromosome_adder = zeros(1,chromosome_len);
+                    constraints_function = @(x)true;
+                case 10
+                    constraints_function = @(x)true;
+            end
+                    
             obj.is_constraints_satisfied = constraints_function;
-            
-            
             obj.chromosome_multiplier = chromosome_multiplier ;
             obj.chromosome_adder = chromosome_adder ;
             
@@ -213,7 +215,7 @@ classdef Genetic_Algorithm < handle
         function [] = calculate_fitnesses(obj)
             %   calculate fitnesses
             for i = 1:obj.population_size
-                obj.population.fitnesses(i) = Genetic_Algorithm.fitness_func(obj.population.chromosomes(i,:), obj.chromosome_multiplier, obj.chromosome_adder);
+                obj.population.fitnesses(i) = obj.fitness_function(obj.population.chromosomes(i,:) .* obj.chromosome_multiplier + obj.chromosome_adder);
             end
         end
         

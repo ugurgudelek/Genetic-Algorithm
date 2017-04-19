@@ -7,6 +7,10 @@ elitism_ratio = 0.5;
 chromosome_split = 0.5; % must be between [0,1]
 iteration_size = 100;
 
+% define fitness function below.
+fitness_function = @(x)Genetic_Algorithm.hartmann_6(x);
+% fitness_function = @(x)calculate_energy(x);  % bu bizim enerji veren
+% kodumuz
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazým.
@@ -17,11 +21,13 @@ constraints_function = @(x)...
                             x(1)        < 0.2 && ... % constraint_1 -- x1    < 0.2
                             x(2) + x(3) > 0.7    ... % constraint_2 -- x2+x3 > 0.7
                             ;
+                        
+
 
 tic
 % instantiate an onject of Genetic Algorithm
 genetic = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,...
-                            chromosome_multiplier, chromosome_adder, constraints_function);
+                            fitness_function, chromosome_multiplier, chromosome_adder, constraints_function);
                         
 % call main method to run all function we have
 genetic.run();
