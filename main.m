@@ -15,19 +15,13 @@ fitness_function = @(x,y)calculate_energy(x,y);  % bu bizim enerji veren
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazým.
-% chromosome_multiplier = [10,10,10,10,10];
-% chromosome_adder = [0,0,0,0,0];
-% constraints_function = @(x)...
-%                             x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
-%                             x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
-%                             ;
-chromosome_len = 6;
-chromosome_multiplier = [1,1,1,1,1,1];
-chromosome_adder = [0,0,0,0,0,0];
+chromosome_multiplier = [10,10,10,10,10];
+chromosome_adder = [0,0,0,0,0];
 constraints_function = @(x)...
-                            x(1) < 0.2 && ...
-                            x(1) + x(2) > 0.7 ...
-                        ;
+                            x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
+                            x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
+                            ;
+
 
 
 tic
