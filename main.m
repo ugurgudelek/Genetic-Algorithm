@@ -1,6 +1,6 @@
 close all
-chromosome_len   = 6; %x1,x2,x3,x4,x5
-population_size  = 100;
+chromosome_len   = 5; %x1,x2,x3,x4,x5
+population_size  = 20;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.05;
 elitism_ratio = 0.5;
@@ -8,18 +8,18 @@ chromosome_split = 0.5; % must be between [0,1]
 iteration_size = 100;
 
 % define fitness function below.
-fitness_function = @(x)Genetic_Algorithm.hartmann_6(x);
-% fitness_function = @(x)calculate_energy(x);  % bu bizim enerji veren
+%fitness_function = @(x)Genetic_Algorithm.hartmann_6(x);
+ fitness_function = @(x)calculate_energy(x);  % bu bizim enerji veren
 % kodumuz
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazým.
-chromosome_multiplier = [1,1,1,1,1,1];
-chromosome_adder = [0,0,0,0,0,0];
+chromosome_multiplier = [10,10,10,10,10];
+chromosome_adder = [0,0,0,0,0];
 
 constraints_function = @(x)...
-                            x(1)        < 0.2 && ... % constraint_1 -- x1    < 0.2
-                            x(2) + x(3) > 0.7    ... % constraint_2 -- x2+x3 > 0.7
+                            x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
+                            x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
                             ;
                         
 

@@ -1,20 +1,20 @@
 function energy = calculate_energy(params)
 
-    if size(params,1) ~= 5
-        'energy params size is not 5. fix this pls'
-    end
-    
+%     if size(params,1) ~= 5
+%         'energy params size is not 5. fix this pls'
+%     end
+%     
     % FEA and Energy Calculation-----------------------------
     x1=params(1);
     x2=params(2);
-    x3=params(3);
+    %x3=params(3);
+    x3=12.5-(x1+x2);
     x4=params(4);
     x5=params(5);
+    rail_to_rail=2*(x1+x2+x3);
     FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
-    mass=FEA_Result(1,2);
-    acc_peak=FEA_Result(1,1);
-    %acc_peak=acc_peak*mass/0.125; %önceki analizlerde 0.125kg mass alm??t?m,
-    %80m/s ç?km??t? onu görmek için bunu ekledim 71m/s ç?kt?.
+    mass_armature=FEA_Result(1,2);
+    acc_peak_armature=FEA_Result(1,1);
 
     %import sampled current data
     text = '200kJ_I.txt'; %import sampled data
@@ -28,7 +28,7 @@ function energy = calculate_energy(params)
     peak_current=max(current); %find peak current to control L' from peak force (below)
 
 
-    Force_max=acc_peak*mass;
+    Force_max=acc_peak_armature*mass_armature; %maximum force on armature
     Lprime=2*Force_max/(peak_current*peak_current);%L' should be approximately 0.5uH/m
 
     current_square=(current).*(current); %Force is related with square of current
@@ -36,12 +36,14 @@ function energy = calculate_energy(params)
     waveform=current_square/peak_current_square;%find normalized force and acceleration waveforms
     %plot(time,waveform); %normalized waveform
 
-    acc_waveform=acc_peak*waveform;%find actual acceleration waveform
-    plot(time,acc_waveform)
+    mass_projectile=0.125;
+    acc_projectile_peak=Force_max/(mass_armature+mass_projectile); %maximum acceleration of projectile+armature
+    acc_waveform=acc_projectile_peak*waveform;%find actual acceleration waveform
+    %plot(time,acc_waveform)
 
 
 
     velocity = trapz(time,acc_waveform(1:data_number));
 
-    energy=0.5*mass*velocity*velocity;
+    energy=0.5*(mass_armature+mass_projectile)*velocity*velocity;
 end
