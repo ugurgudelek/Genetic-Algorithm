@@ -9,13 +9,14 @@ classdef Genetic_Algorithm < handle
         iteration_size;
         
         population;
-        fitness_history;
-        chromosome_history;
+        history;
+        variable_history;
         
         chromosome_multiplier;
         chromosome_adder;
         is_constraints_satisfied;
         fitness_function;
+        
         
     end
     methods(Static)
@@ -176,14 +177,18 @@ classdef Genetic_Algorithm < handle
         function plot(obj)
             % retrieve fitness_history
             hold on
-            fit_hist = obj.fitness_history(:,1);
-            plot([1:length(fit_hist)],fit_hist, '--or');
+            iter = size(obj.history.fitness,3);
+            fit_hist = obj.history.fitness(1,1,iter);
+            plot(iter,fit_hist, '.r');
             title('Fitness history convergence diagram');
             
-            legend(strcat('fitness : ',num2str(fit_hist(length(fit_hist)))),...
-                strcat('fittest 1 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1),1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
-                strcat('fittest 2 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1)-1,1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
-                strcat('fittest 3 : ',num2str(obj.chromosome_history(max(size(obj.chromosome_history,1)-2,1),:).*obj.chromosome_multiplier + obj.chromosome_adder)),...
+            fittest_1 = obj.history.chromosome(1,:,max(iter,1));
+            fittest_2 = obj.history.chromosome(1,:,max(iter-1,1));
+            fittest_3 = obj.history.chromosome(1,:,max(iter-2,1));
+            legend(strcat('fitness : ',num2str(fit_hist)),...
+                strcat('fittest 1 : ',num2str(fittest_1.*obj.chromosome_multiplier + obj.chromosome_adder)),...
+                strcat('fittest 2 : ',num2str(fittest_2.*obj.chromosome_multiplier + obj.chromosome_adder)),...
+                strcat('fittest 3 : ',num2str(fittest_3.*obj.chromosome_multiplier + obj.chromosome_adder)),...
                 'Location', 'southeast');
             drawnow;
         end
@@ -197,10 +202,8 @@ classdef Genetic_Algorithm < handle
                 obj.mutation()
                 obj.calculate_fitnesses()
                 obj.sort_by_field()
-                obj.fitness_history(iter,1) = obj.population.fitnesses(1);
-                obj.fitness_history(iter,2) = obj.population.fitnesses(2);
-                obj.fitness_history(iter,3) = obj.population.fitnesses(3);
-                obj.chromosome_history(iter,:) = obj.population.chromosomes(1,:);
+                obj.history.fitness(:,:,iter) = obj.population.fitnesses;
+                obj.history.chromosome(:,:,iter) = obj.population.chromosomes;
                 obj.plot()
             end
         end
@@ -213,10 +216,14 @@ classdef Genetic_Algorithm < handle
         end
         
         function [] = calculate_fitnesses(obj)
-            %   calculate fitnesses
+            %   calculate 
+            
             for i = 1:obj.population_size
-                obj.population.fitnesses(i) = obj.fitness_function(obj.population.chromosomes(i,:) .* obj.chromosome_multiplier + obj.chromosome_adder);
+                [obj.population.fitnesses(i),new_history(i)] = obj.fitness_function(obj.population.chromosomes(i,:) .* obj.chromosome_multiplier + obj.chromosome_adder, obj.variable_history);
             end
+            
+            obj.variable_history = cat(1,obj.variable_history,new_history);
+            
         end
         
         function [] = sort_by_field(obj)

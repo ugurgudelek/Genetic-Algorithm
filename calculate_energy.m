@@ -1,4 +1,4 @@
-function energy = calculate_energy(params)
+function [energy, cur_history] = calculate_energy(params, prev_history)
 
 %     if size(params,1) ~= 5
 %         'energy params size is not 5. fix this pls'
@@ -12,9 +12,27 @@ function energy = calculate_energy(params)
     x4=params(4);
     x5=params(5);
     rail_to_rail=2*(x1+x2+x3);
+    
+    % do not calculate fitness via comsol, use precalculated values
+    if ~isempty(prev_history)
+        % find params in prev_history.params
+        
+        is_params_in_prev_history = arrayfun(@(x) isequal(x.params, params), prev_history);
+        
+        % get found idx
+        [row,col] = find(is_params_in_prev_history == 1);
+        if ~isempty(row)
+            energy = prev_history(row(1),col(1)).energy;
+            cur_history = prev_history(row(1),col(1));
+            return
+        end
+    end
+        
     FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
     mass_armature=FEA_Result(1,2);
     acc_peak_armature=FEA_Result(1,1);
+    mass_armature = rand;
+    acc_peak_armature = rand;
 
     %import sampled current data
     text = '200kJ_I.txt'; %import sampled data
@@ -46,4 +64,15 @@ function energy = calculate_energy(params)
     velocity = trapz(time,acc_waveform(1:data_number));
 
     energy=0.5*(mass_armature+mass_projectile)*velocity*velocity;
+
+    
+    
+    % save parameters for future
+    cur_history.params = params;
+    cur_history.mass_armature = mass_armature;
+    cur_history.acc_peak_armature = acc_peak_armature;
+    cur_history.Lprime = Lprime;
+    cur_history.energy = energy;
+    cur_history.velocity = velocity;
+        
 end
