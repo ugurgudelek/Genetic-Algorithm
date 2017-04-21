@@ -31,8 +31,6 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
     mass_armature=FEA_Result(1,2);
     acc_peak_armature=FEA_Result(1,1);
-    mass_armature = rand;
-    acc_peak_armature = rand;
 
     %import sampled current data
     text = '200kJ_I.txt'; %import sampled data
