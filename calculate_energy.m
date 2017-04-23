@@ -9,8 +9,10 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     x2=params(2);
     %x3=params(3);
     x3=12.5-(x1+x2);
-    x4=params(4);
-    x5=params(5);
+    x4=params(3);
+    x5=params(4);
+    mass_projectile=params(5);
+    
     rail_to_rail=2*(x1+x2+x3);
     
     % do not calculate fitness via comsol, use precalculated values
@@ -31,8 +33,6 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
     mass_armature=FEA_Result(1,2);
     acc_peak_armature=FEA_Result(1,1);
-    mass_armature = rand;
-    acc_peak_armature = rand;
 
     %import sampled current data
     text = '200kJ_I.txt'; %import sampled data
@@ -54,7 +54,7 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     waveform=current_square/peak_current_square;%find normalized force and acceleration waveforms
     %plot(time,waveform); %normalized waveform
 
-    mass_projectile=0.125;
+%     mass_projectile=0.125;
     acc_projectile_peak=Force_max/(mass_armature+mass_projectile); %maximum acceleration of projectile+armature
     acc_waveform=acc_projectile_peak*waveform;%find actual acceleration waveform
     %plot(time,acc_waveform)
@@ -63,7 +63,7 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
 
     velocity = trapz(time,acc_waveform(1:data_number));
 
-    energy=0.5*(mass_armature+mass_projectile)*velocity*velocity;
+    energy=0.5*(mass_projectile)*velocity*velocity;
 
     
     
@@ -74,5 +74,6 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     cur_history.Lprime = Lprime;
     cur_history.energy = energy;
     cur_history.velocity = velocity;
+    cur_history.mass_projectile = mass_projectile;
         
 end

@@ -1,11 +1,11 @@
 close all
 chromosome_len   = 5; %x1,x2,x3,x4,x5
-population_size  = 100;
+population_size  = 20;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.05;
 elitism_ratio = 0.5;
 chromosome_split = 0.5; % must be between [0,1]
-iteration_size = 100;
+iteration_size = 20;
 
 
 % define fitness function below.
@@ -15,12 +15,12 @@ fitness_function = @(x,y)calculate_energy(x,y);  % bu bizim enerji veren
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazım.
-chromosome_multiplier = [10,10,10,10,10];
-chromosome_adder = [0,0,0,0,0];
+chromosome_multiplier = [9,10,10,10,0.2];
+chromosome_adder = [1,0,0,0,0];
 constraints_function = @(x)...
-                            x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
                             x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
                             ;
+%                           x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
 
 
 

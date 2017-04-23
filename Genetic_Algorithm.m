@@ -147,7 +147,7 @@ classdef Genetic_Algorithm < handle
             obj.crossover_ratio  = crossover_ratio;
             obj.mutation_ratio   = mutation_ratio;
             obj.elitism_ratio    = elitism_ratio;
-            obj.chromosome_split = chromosome_len * chromosome_split;
+            obj.chromosome_split = int8(chromosome_len * chromosome_split);
             obj.iteration_size   = iteration_size;
             obj.fitness_function = fitness_function;
                        
