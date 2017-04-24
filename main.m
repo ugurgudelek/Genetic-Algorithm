@@ -1,12 +1,12 @@
 close all
 warning('off','MATLAB:legend:IgnoringExtraEntries')
-chromosome_len   = 5; %x1,x2,x3,x4,x5
-population_size  = 4;
+chromosome_len   = 7; %x1,x2,x3,x4,x5
+population_size  = 50;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.05;
 elitism_ratio = 0.5;
 chromosome_split = 0.5; % must be between [0,1]
-iteration_size = 20;
+iteration_size = 35;
 
 
 % define fitness function below.
@@ -16,8 +16,8 @@ fitness_function = @(x,y)calculate_energy(x,y);  % bu bizim enerji veren
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazým.
-chromosome_multiplier = [9,10,10,10,0.2];
-chromosome_adder = [1,0,0,0,0];
+chromosome_multiplier = [10,10,15,15,15,0.2,10];
+chromosome_adder = [1,1,1,1,1,0.1,1];
 constraints_function = @(x)...
                             x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
                             ;
@@ -34,6 +34,11 @@ genetic = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutat
                         
 % call main method to run all function we have
 genetic.run();
+
+    c = genetic.history.chromosome(1,:,end).*genetic.chromosome_multiplier + genetic.chromosome_adder;
+    FEM_t_1mj_pressure_friction2(c(1),c(2),12.5-c(1)-c(2),c(3),c(4),c(5),c(7), 1);
+    cur_history = genetic.variable_history(num2str(c));
+    save('history_5_38pm_4_24');
 
 toc
 

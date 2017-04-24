@@ -185,6 +185,7 @@ classdef Genetic_Algorithm < handle
             obj.calculate_fitnesses()
 
             for iter = 1:obj.iteration_size
+                disp(strcat('GA iteration : ', num2str(iter)));
                 obj.elimination()
                 obj.elitism()
                 obj.crossover()
