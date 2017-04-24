@@ -1,4 +1,4 @@
-function [energy, cur_history] = calculate_energy(params, prev_history)
+function [energy, cur_history] = calculate_energy(params, var_history)
 
 %     if size(params,1) ~= 5
 %         'energy params size is not 5. fix this pls'
@@ -16,23 +16,17 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     rail_to_rail=2*(x1+x2+x3);
     
     % do not calculate fitness via comsol, use precalculated values
-    if ~isempty(prev_history)
-        % find params in prev_history.params
-        
-        is_params_in_prev_history = arrayfun(@(x) isequal(x.params, params), prev_history);
-        
-        % get found idx
-        [row,col] = find(is_params_in_prev_history == 1);
-        if ~isempty(row)
-            energy = prev_history(row(1),col(1)).energy;
-            cur_history = prev_history(row(1),col(1));
-            return
-        end
+    if isKey(var_history,num2str(params))
+        cur_history = var_history(num2str(params));
+        energy = cur_history.energy;
+        return
     end
-        
-    FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
-    mass_armature=FEA_Result(1,2);
-    acc_peak_armature=FEA_Result(1,1);
+    
+    mass_armature = rand;
+    acc_peak_armature = rand;
+%     FEA_Result = Farm_FEA(x1,x2,x3,x4,x5,0);
+%     mass_armature=FEA_Result(1,2);
+%     acc_peak_armature=FEA_Result(1,1);
 
     %import sampled current data
     text = '200kJ_I.txt'; %import sampled data
@@ -77,3 +71,21 @@ function [energy, cur_history] = calculate_energy(params, prev_history)
     cur_history.mass_projectile = mass_projectile;
         
 end
+
+
+
+    
+    % do not calculate fitness via comsol, use precalculated values
+%     if ~isempty(prev_history)
+%         % find params in prev_history.params
+%         
+%         is_params_in_prev_history = arrayfun(@(x) isequal(x.params, params), prev_history);
+%         
+%         % get found idx
+%         [row,col] = find(is_params_in_prev_history == 1);
+%         if ~isempty(row)
+%             energy = prev_history(row(1),col(1)).energy;
+%             cur_history = prev_history(row(1),col(1));
+%             return
+%         end
+%     end

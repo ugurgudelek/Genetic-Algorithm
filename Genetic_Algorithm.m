@@ -16,6 +16,7 @@ classdef Genetic_Algorithm < handle
         chromosome_adder;
         is_constraints_satisfied;
         fitness_function;
+        elimination_function;
         
         
     end
@@ -118,30 +119,13 @@ classdef Genetic_Algorithm < handle
                 end
             end
         end
-        
-%         function boolAns = is_constraints_satisfied(chromosome, mul, add)
-%             %   set predefined contraints
-%             chromosome = chromosome .* mul + add;
-%             
-%             x1 = chromosome(1);
-%             x2 = chromosome(2);
-%             x3 = chromosome(3);
-%             x4 = chromosome(4);
-%             x5 = chromosome(5);
-%             x6 = chromosome(6);
-%             
-%             boolAns = (x1 < 0.2) && (x2 < 1);
-% 
-%         end
-        
-        
-        
+   
     end
     
     methods
 %       constructor
         function obj = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,...
-                                            fitness_function, chromosome_multiplier, chromosome_adder,constraints_function)
+                                            fitness_function, chromosome_multiplier, chromosome_adder,constraints_function,elimination_function)
             obj.chromosome_len   = chromosome_len;
             obj.population_size  = population_size;
             obj.crossover_ratio  = crossover_ratio;
@@ -150,6 +134,9 @@ classdef Genetic_Algorithm < handle
             obj.chromosome_split = int8(chromosome_len * chromosome_split);
             obj.iteration_size   = iteration_size;
             obj.fitness_function = fitness_function;
+            obj.elimination_function = elimination_function;
+            
+            obj.variable_history = containers.Map;
                        
 %             default argument fix below
             switch nargin
@@ -194,9 +181,11 @@ classdef Genetic_Algorithm < handle
         end
         
         function run(obj)
+            
             obj.calculate_fitnesses()
 
             for iter = 1:obj.iteration_size
+                obj.elimination()
                 obj.elitism()
                 obj.crossover()
                 obj.mutation()
@@ -218,11 +207,11 @@ classdef Genetic_Algorithm < handle
         function [] = calculate_fitnesses(obj)
             %   calculate 
             
-            for i = 1:obj.population_size
-                [obj.population.fitnesses(i),new_history(i)] = obj.fitness_function(obj.population.chromosomes(i,:) .* obj.chromosome_multiplier + obj.chromosome_adder, obj.variable_history);
+            for i = 1:size(obj.population.chromosomes,1)
+                [obj.population.fitnesses(i,:),new_history] = obj.fitness_function(obj.population.chromosomes(i,:) .* obj.chromosome_multiplier + obj.chromosome_adder, obj.variable_history);
+                obj.save_to_var_history(new_history);
             end
             
-            obj.variable_history = cat(1,obj.variable_history,new_history);
             
         end
         
@@ -236,8 +225,10 @@ classdef Genetic_Algorithm < handle
         function [] = elitism(obj)
             %   elitism
             obj.sort_by_field()
-            obj.population.chromosomes = obj.population.chromosomes(1:size(obj.population.chromosomes,1)*obj.elitism_ratio,:);
-            obj.population.fitnesses = obj.population.fitnesses(1:size(obj.population.fitnesses,1)*obj.elitism_ratio);
+%             below mean we may have less chromosomes than elite size.
+            crop_size = min(size(obj.population.chromosomes,1), obj.population_size*obj.elitism_ratio);
+            obj.population.chromosomes = obj.population.chromosomes(1:crop_size,:);
+            obj.population.fitnesses = obj.population.fitnesses(1:crop_size);
         end
         
         function [] = crossover(obj)
@@ -306,8 +297,14 @@ classdef Genetic_Algorithm < handle
                         roulette_arr = [];
                   
                     else
-%                         size of rouletter array is 0 here
-                          break
+%                         size of rouletter array is 0 here. last stop
+%                         in case of missing chromosomes. fill them
+%                         randomly here
+                        while (obj.population_size - size(next_gen.chromosomes,1)) ~= 0
+                            next_gen.chromosomes(next_mem_count,:) = obj.create_proper_random_chromosome(obj.chromosome_len, obj.chromosome_multiplier, obj.chromosome_adder);
+                            next_mem_count = next_mem_count + 1;
+                        end
+                        break;
                     end
                
                 
@@ -319,7 +316,7 @@ classdef Genetic_Algorithm < handle
         
         function [] = mutation(obj)
             %   mutation
-            for i = 1:obj.population_size
+            for i = 1:size(obj.population.chromosomes,1)
                 for j = 1:obj.chromosome_len
                     if rand > (1-obj.mutation_ratio)
                         mutated = obj.population.chromosomes(i,:);
@@ -344,6 +341,38 @@ classdef Genetic_Algorithm < handle
                 chromosome = rand(chromosome_len,1)';
             end
                        
+        end
+        
+        function [] = elimination(obj)
+            new_chromosomes = [];
+            new_fitnesses = [];
+            for i = 1:size(obj.population.fitnesses,1)
+                chromosome = obj.population.chromosomes(i,:);
+                fitness = obj.population.fitnesses(i,:);
+                [eliminate, new_history] = obj.elimination_function(chromosome .* obj.chromosome_multiplier + obj.chromosome_adder , obj.variable_history);
+                if ~eliminate
+                    new_chromosomes(size(new_chromosomes,1)+1,:) = chromosome;
+                    new_fitnesses(size(new_fitnesses,1)+1,:) = fitness;
+                    obj.save_to_var_history(new_history);
+                end
+            end
+            obj.population.chromosomes = new_chromosomes;
+            obj.population.fitnesses = new_fitnesses;
+            
+            % check for all population is gone
+            if size(obj.population.chromosomes,1) == 0
+                % start over
+                warning('There is no chromosome left. Lets start over')
+                obj.create_population();
+                obj.calculate_fitnesses()
+            end
+        end
+        
+        function [] = save_to_var_history(obj, new_history)
+%             this function assume that all new_history vars has params
+%             attribute, and then takes params as input
+            key = num2str(new_history.params);
+            obj.variable_history(key) = new_history;
         end
         
     end

@@ -1,6 +1,7 @@
 close all
+warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 5; %x1,x2,x3,x4,x5
-population_size  = 20;
+population_size  = 4;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.05;
 elitism_ratio = 0.5;
@@ -21,13 +22,15 @@ constraints_function = @(x)...
                             x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
                             ;
 %                           x(1)        > 1 && ... % constraint_1 -- x1    < 0.2
-
+elimination_function = @(x,y)pressure_satisfied(x,y);
 
 
 tic
+
+
 % instantiate an onject of Genetic Algorithm
 genetic = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutation_ratio,elitism_ratio,chromosome_split,iteration_size,...
-                            fitness_function, chromosome_multiplier, chromosome_adder, constraints_function);
+                            fitness_function, chromosome_multiplier, chromosome_adder, constraints_function, elimination_function);
                         
 % call main method to run all function we have
 genetic.run();
