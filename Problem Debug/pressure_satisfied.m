@@ -1,6 +1,6 @@
 
 function [eliminate,cur_history] = pressure_satisfied(params, var_history)
-disp('pressure func'    
+disp('pressure func');    
     % do not calculate fitness via comsol, use precalculated values
     if isKey(var_history,num2str(params))
         cur_history = var_history(num2str(params));
@@ -13,11 +13,15 @@ disp('pressure func'
 %     TODO:
 %     CALCULATE PRESSURE BELOW
     
-   FEA_Result = FEM_t_1mj_pressure_friction2(x1,x2,x3,x4,x5,x6,bombe,0);
-% 1)F_armature, 2)Pressure, 3)F_rail 4)Fcontact_from_armature_volume 5)Fcontact_from_armature_boundary 6) mass
-    mass_armature=FEA_Result(1,6);
-    pressure=FEA_Result(1,2);
-    force_peak_armature=FEA_Result(1,1); %maximum force on armature
+%    FEA_Result = FEM_t_1mj_pressure_friction2(x1,x2,x3,x4,x5,x6,bombe,0);
+% % 1)F_armature, 2)Pressure, 3)F_rail 4)Fcontact_from_armature_volume 5)Fcontact_from_armature_boundary 6) mass
+%     mass_armature=FEA_Result(1,6);
+%     pressure=FEA_Result(1,2);
+%     force_peak_armature=FEA_Result(1,1); %maximum force on armature
+
+mass_armature=rand/5;
+ pressure=rand*100e6*2;
+ force_peak_armature=rand*100e3;
 
  %import sampled current data
     text = '1mJ.txt'; %import sampled data

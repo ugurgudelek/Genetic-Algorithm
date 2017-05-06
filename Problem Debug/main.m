@@ -1,12 +1,12 @@
 close all
 warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 7; %x1,x2,x3,x4,x5
-population_size  = ;
+population_size  = 100;
 crossover_ratio  = 0.95;
-mutation_ratio   = 0.05;
+mutation_ratio   = 0.01;
 elitism_ratio = 0.5;
 chromosome_split = 0.5; % must be between [0,1]
-iteration_size = 20;
+iteration_size = 100;
 
 
 % define fitness function below.
@@ -36,9 +36,9 @@ genetic = Genetic_Algorithm(chromosome_len,population_size,crossover_ratio,mutat
 genetic.run();
 
     c = genetic.history.chromosome(1,:,end).*genetic.chromosome_multiplier + genetic.chromosome_adder;
-    FEM_t_1mj_pressure_friction2(c(1),c(2),12.5-c(1)-c(2),c(3),c(4),c(5),c(7), 1);
+%    FEM_t_1mj_pressure_friction2(c(1),c(2),12.5-c(1)-c(2),c(3),c(4),c(5),c(7), 1);
     cur_history = genetic.variable_history(num2str(c));
-    save('history_5_38pm_4_24');
+ %   save('history_5_38pm_4_24');
 
 toc
 
