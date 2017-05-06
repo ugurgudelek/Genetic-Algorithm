@@ -6,6 +6,7 @@ disp('pressure func');
         cur_history = var_history(num2str(params));
         pressure = cur_history.pressure;
         eliminate = pressure > 100e6;
+        cur_history.eliminate = eliminate;
         return
         
     end
@@ -67,7 +68,9 @@ mass_armature=rand/5;
     
     cur_history.pressure = pressure;
     cur_history.force_peak_armature = force_peak_armature;
+   
     eliminate = pressure > 100e6;
+    cur_history.eliminate = eliminate;
 end
 
 
