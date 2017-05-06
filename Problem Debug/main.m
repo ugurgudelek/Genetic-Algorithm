@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 close all
 warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 7; %x1,x2,x3,x4,x5
@@ -104,4 +103,9 @@ end
 %     mesh(x,y,z)
 %     hold on
 %     genetic.scatter()
+
+
+
+
+
 
