@@ -1,4 +1,3 @@
-
 function [eliminate,cur_history] = pressure_satisfied(params, var_history)
 disp('pressure func');    
     % do not calculate fitness via comsol, use precalculated values
@@ -73,6 +72,3 @@ mass_armature=rand/5;
     eliminate = pressure > 100e6;
     cur_history.eliminate = eliminate;
 end
-
-
- 

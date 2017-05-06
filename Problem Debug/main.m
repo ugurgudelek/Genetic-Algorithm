@@ -104,9 +104,3 @@ end
 %     mesh(x,y,z)
 %     hold on
 %     genetic.scatter()
-
-
-
-
-
-
