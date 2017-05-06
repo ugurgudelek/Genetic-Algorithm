@@ -113,7 +113,7 @@ classdef Genetic_Algorithm < handle
                 for i = 1:size(roulette_arr,1)
                     if rand_pnt <= roulette_arr(i)
                         %           i is my selected point
-                        selection = i;
+                        selection = i-1;
                         return
                     end
                 end
@@ -191,7 +191,13 @@ classdef Genetic_Algorithm < handle
                 obj.crossover()
                 obj.mutation()
                 obj.calculate_fitnesses()
+                obj.elimination()
                 obj.sort_by_field()
+                s = size(obj.population.chromosomes,1);
+                for i = s + 1 : obj.population_size
+                    obj.population.chromosomes(i,:) = obj.population.chromosomes(s,:);
+                    obj.population.fitnesses(i) = obj.population.fitnesses(s);
+                end
                 obj.history.fitness(:,:,iter) = obj.population.fitnesses;
                 obj.history.chromosome(:,:,iter) = obj.population.chromosomes;
                 obj.plot()
@@ -258,6 +264,11 @@ classdef Genetic_Algorithm < handle
                         [idx_2,roulette_arr] = Genetic_Algorithm.roulette(roulette_arr);
                         roulette_arr = cat(1,roulette_arr(1:idx_2-1),roulette_arr(idx_2+1:size(roulette_arr,1)));
                         
+%                         index 1 seçildikten sonra index 2 büyükse onu
+%                         düzeltmek gerekiyor.
+                        if idx_2 >= idx_1
+                            idx_2 = idx_2 + 1;
+                        end
                         chromosome_1 = obj.population.chromosomes(idx_1,:);
                         chromosome_2 = obj.population.chromosomes(idx_2,:);
                         
@@ -317,7 +328,7 @@ classdef Genetic_Algorithm < handle
         
         function [] = mutation(obj)
             %   mutation
-            for i = 1:size(obj.population.chromosomes,1)
+            for i = 2:size(obj.population.chromosomes,1)
                 for j = 1:obj.chromosome_len
                     if rand > (1-obj.mutation_ratio)
                         mutated = obj.population.chromosomes(i,:);

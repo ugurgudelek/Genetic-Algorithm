@@ -3,8 +3,8 @@ warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 7; %x1,x2,x3,x4,x5
 population_size  = 100;
 crossover_ratio  = 0.95;
-mutation_ratio   = 0.01;
-elitism_ratio = 0.5;
+mutation_ratio   = 0.1;
+elitism_ratio = 0.2;
 chromosome_split = 0.5; % must be between [0,1]
 iteration_size = 100;
 
@@ -42,8 +42,21 @@ genetic.run();
 
 toc
 
+% genetic.variable_history(num2str(genetic.population.chromosomes(1,:).*genetic.chromosome_multiplier + genetic.chromosome_adder))
 
+for i=1:100
+    pres_arr(i) = genetic.variable_history(num2str(genetic.population.chromosomes(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder)).pressure
+end
 
+c = reshape(genetic.history.chromosome(1,:,:),[7,100])';
+for i=1:100
+    c(i,:) = c(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder;
+end
+
+for i=1:7
+    figure
+    plot(c(:,i), 'o')
+end
 
 
 % % retrieve fitness_history
