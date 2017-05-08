@@ -1,12 +1,12 @@
 close all
 warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 7; %x1,x2,x3,x4,x5
-population_size  = 100;
+population_size  = 50;
 crossover_ratio  = 0.95;
 mutation_ratio   = 0.1;
 elitism_ratio = 0.2;
 chromosome_split = 0.5; % must be between [0,1]
-iteration_size = 100;
+iteration_size = 150;
 
 
 % define fitness function below.

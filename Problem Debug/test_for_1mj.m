@@ -1,11 +1,11 @@
-    x1=2;
-    x2=3;
+    x1=1;
+    x2=2;
     %x3=params(3);
     x3=12.5-(x1+x2);
     x4=10;
     x5=10;
-    x6=10;
-    mass_projectile=0.125;
+    x6=1;
+    mass_projectile=0.3;
     bombe=5;
     rail_to_rail=2*(x1+x2+x3);
 
@@ -20,14 +20,16 @@
     %import sampled current data
     text = '1mJ.txt'; %import sampled data
     textdata=importdata(text);
-    data_number=size(textdata.data,1); %find # of data
-    data_number=(round(data_number/2)-1)*2;
-    current=textdata.data(1:data_number,2); %save current and time array from the text file
-    time=textdata.data(1:data_number,1);
+%     data_number=size(textdata.data,1); %find # of data
+%     data_number=(round(data_number/2)-1)*2;
+%     current=textdata.data(1:data_number,2); %save current and time array from the text file
+%     time=textdata.data(1:data_number,1);
     %time=time.*1e-6;
+    time=textdata(:,1);
+    current=textdata(:,2);
     
     peak_current=max(current); %find peak current to control L' from peak force (below)
-
+%TO DO: AGA BURDA ELLE GIR OLMADI BOLE L'
 
    
     Lprime=2*force_peak_armature/(peak_current*peak_current);%L' should be approximately 0.5uH/m
@@ -44,7 +46,7 @@
 
 
 
-    velocity = trapz(time,acc_waveform(1:data_number));
+    velocity = trapz(time,acc_waveform);
 
     energy=0.5*(mass_projectile)*velocity*velocity;
 
