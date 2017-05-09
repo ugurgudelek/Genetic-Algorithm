@@ -187,11 +187,17 @@ classdef Genetic_Algorithm < handle
             for iter = 1:obj.iteration_size
                 disp(strcat('GA iteration : ', num2str(iter)));
                 obj.elimination()
+                size(obj.population.chromosomes)
+                size(obj.population.fitnesses)
                 obj.elitism()
                 obj.crossover()
                 obj.mutation()
                 obj.calculate_fitnesses()
+                size(obj.population.chromosomes)
+                size(obj.population.fitnesses)
                 obj.elimination()
+                size(obj.population.chromosomes)
+                size(obj.population.fitnesses)
                 obj.sort_by_field()
                 s = size(obj.population.chromosomes,1);
                 for i = s + 1 : obj.population_size
@@ -225,6 +231,9 @@ classdef Genetic_Algorithm < handle
         function [] = sort_by_field(obj)
             % sort population struct
             [~, ind]=sort(cell2mat({obj.population.fitnesses}),'descend');
+            ind
+            size(obj.population.chromosomes)
+            obj.population.chromosomes(ind,:)
             obj.population.chromosomes=obj.population.chromosomes(ind,:);
             obj.population.fitnesses=obj.population.fitnesses(ind);
         end
@@ -355,7 +364,7 @@ classdef Genetic_Algorithm < handle
                        
         end
         
-        function [] = elimination(obj)
+        function [] = elimination(obj)            
             new_chromosomes = [];
             new_fitnesses = [];
             for i = 1:size(obj.population.fitnesses,1)
@@ -376,7 +385,10 @@ classdef Genetic_Algorithm < handle
                 % start over
                 warning('There is no chromosome left. Lets start over')
                 obj.create_population();
-                obj.calculate_fitnesses()
+                obj.calculate_fitnesses();
+                obj.elimination();
+            else
+                disp(size(obj.population.chromosomes,1));
             end
         end
         

@@ -1151,7 +1151,7 @@ model.cpl('intop1').selection.set([3]);
 model.cpl('maxop1').selection.geom('geom1', 2);
 model.cpl('maxop1').selection.set([13 18]);
 model.cpl('minop1').selection.geom('geom1', 2);
-model.cpl('minop1').selection.set([19]);
+model.cpl('minop1').selection.set([19 20]);
 model.cpl('intop2').selection.geom('geom1', 2);
 model.cpl('intop2').selection.set([13]);
 

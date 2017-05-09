@@ -4,7 +4,7 @@ disp('pressure func');
     if isKey(var_history,num2str(params))
         cur_history = var_history(num2str(params));
         pressure = cur_history.pressure;
-        eliminate = pressure > 100e6;
+        eliminate = pressure > 110e6;
         cur_history.eliminate = eliminate;
         return
         
