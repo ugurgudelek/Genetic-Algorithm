@@ -1,12 +1,12 @@
 close all
 warning('off','MATLAB:legend:IgnoringExtraEntries')
 chromosome_len   = 7; %x1,x2,x3,x4,x5
-population_size  = 20;
+population_size  = 4;
 crossover_ratio  = 0.95;
-mutation_ratio   = 0.02;
-elitism_ratio = 0.5;
+mutation_ratio   = 0.1;
+elitism_ratio = 1;
 chromosome_split = 0.5; % must be between [0,1]
-iteration_size = 150;
+iteration_size = 100;
 
 
 % define fitness function below.
@@ -16,8 +16,8 @@ fitness_function = @(x,y)calculate_energy(x,y);  % bu bizim enerji veren
 
 % define contraints below.
 % multiplier ve adder a öncelik vermek lazým.
-chromosome_multiplier = [10,10,15,15,15,0.2,10];
-chromosome_adder = [1,1,1,1,1,0.1,1];
+chromosome_multiplier = [10,10,10,10,15,0.2,10];
+chromosome_adder = [1,1,1,5,5,0.1,1];
 constraints_function = @(x)...
                             x(1) + x(2) < 10    ... % constraint_2 -- x2+x3 > 0.7
                             ;
@@ -43,21 +43,21 @@ genetic.run();
 
 toc
 
-% % genetic.variable_history(num2str(genetic.population.chromosomes(1,:).*genetic.chromosome_multiplier + genetic.chromosome_adder))
-% 
-% for i=1:100
-%     pres_arr(i) = genetic.variable_history(num2str(genetic.population.chromosomes(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder)).pressure
-% end
-% 
-% c = reshape(genetic.history.chromosome(1,:,:),[7,100])';
-% for i=1:100
-%     c(i,:) = c(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder;
-% end
-% 
-% for i=1:7
-%     figure
-%     plot(c(:,i), 'o')
-% end
+% genetic.variable_history(num2str(genetic.population.chromosomes(1,:).*genetic.chromosome_multiplier + genetic.chromosome_adder))
+
+for i=1:100
+    pres_arr(i) = genetic.variable_history(num2str(genetic.population.chromosomes(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder)).pressure
+end
+
+c = reshape(genetic.history.chromosome(1,:,:),[7,100])';
+for i=1:100
+    c(i,:) = c(i,:).*genetic.chromosome_multiplier + genetic.chromosome_adder;
+end
+
+for i=1:7
+    figure
+    plot(c(:,i), 'o')
+end
 
 
 % % retrieve fitness_history
