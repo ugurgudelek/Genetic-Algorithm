@@ -19,6 +19,7 @@ class GeneticAlgorithm:
                  elitism_ratio=0.2,
                  crossover_split_ratio=0.5,
                  maximise_fitness=True):
+
         self.genom_size = genom_size
         self.population_size = population_size
         self.generation_size = generation_size
@@ -35,8 +36,8 @@ class GeneticAlgorithm:
         self.is_pre_constraints_satisfied = lambda x: True
         self.tournament_size = 3
 
-    def default_fitness_function(self, chromosome):
-        return sum(chromosome.genes)
+    def default_fitness_function(self, genes):
+        return sum(genes)
 
     def create_random_genom(self):
         return random.random()
@@ -71,7 +72,7 @@ class GeneticAlgorithm:
         initial_population = []
         while len(initial_population) < self.population_size:
             individual = self.create_random_chromosome()
-            if self.is_pre_constraints_satisfied(individual):
+            if self.is_pre_constraints_satisfied(individual.genes):
                 initial_population.append(individual)
         self.current_generation = initial_population
 
@@ -79,7 +80,7 @@ class GeneticAlgorithm:
         """calculate fitnesses of self.current_generation"""
         for individual in self.current_generation:
             # todo: do not forget to set fitness function
-            individual.fitness = self.fitness_function(individual)
+            individual.fitness = self.fitness_function(individual.genes)
 
     def sort_population(self):
         """sort self.current_generation according to fitnesses"""
@@ -116,10 +117,10 @@ class GeneticAlgorithm:
                 child_1 = self.mutate(child_1)
                 child_2 = self.mutate(child_2)
 
-            if self.is_pre_constraints_satisfied(child_1):
+            if self.is_pre_constraints_satisfied(child_1.genes):
                 new_population.append(child_1)
             if len(new_population) < self.population_size:
-                if self.is_pre_constraints_satisfied(child_2):
+                if self.is_pre_constraints_satisfied(child_2.genes):
                     new_population.append(child_2)
 
         self.current_generation = new_population
@@ -147,9 +148,12 @@ class GeneticAlgorithm:
         """Endless loop to find solution"""
 
         self.create_first_generation()
+        yield self.current_generation
 
-        for _ in range(self.generation_size):
+        for iteration in range(self.generation_size):
             self.create_next_generation()
+            yield self.current_generation
+
 
     def best_individual(self):
         """returns first individual of current generation"""
@@ -168,29 +172,7 @@ class Chromosome:
         return repr((self.fitness, self.genes))
 
 
-def is_pre_constraints_satisfied(chromosome):
-    genes = chromosome.genes
-    x1, x2, x4, x5, x6 = genes[0], genes[1], genes[2], genes[3], genes[4]
 
-    x1 = x1 * 11.0
-    x2 = x2 * 11.0
-    x4 = x4 * 48.0
-    x5 = x5 * 48.0
-    x6 = x6 * 48.0
-
-    if x1 < 1 or x2 < 1 or x4 < 1 or x5 < 1 or x6 < 1:
-        # create new chromosome
-        return False
-
-    if x1 + x2 > 11.5:
-        # create new chromosome
-        return False
-
-    if x4 + x5 + x6 > 50:
-        # create new chromosome
-        return False
-
-    return True
 
 
 def sphere_function(xx):

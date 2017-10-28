@@ -1,4 +1,4 @@
-function out = Energy_Calc(force_peak_armature, mass_armature)
+function [Energy, Lprime, acc_max, Velocity] = Energy_Calc(force_peak_armature, mass_armature)
 
     Current_Max=1e6;
     mass_pro=0.025;
@@ -9,6 +9,6 @@ function out = Energy_Calc(force_peak_armature, mass_armature)
     Lprime=2*force_peak_armature/(Current_Max*Current_Max);
     acc_max=force_peak_armature/(mass_armature+mass_pro);
     Velocity=sqrt(2*Energy/(mass_armature+mass_pro));
-    out=[Energy Lprime acc_max Velocity];
+    
 
         

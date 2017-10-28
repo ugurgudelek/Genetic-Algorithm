@@ -1,4 +1,4 @@
-function out = FEA_Contact(x1, x2, x3, x4, x5,x6)
+function [Fy_armature, Jcontact mass] = FEA_Contact(x1, x2, x3, x4, x5,x6)
 %
 % FEA_Contact.m
 %
@@ -1687,4 +1687,4 @@ mass = mass(1,1);
 %     mphplot(model,'pg6','rangenum',1);
 % end
 
-out = [Fy_armature Jcontact mass];
+% out = [Fy_armature Jcontact mass];
