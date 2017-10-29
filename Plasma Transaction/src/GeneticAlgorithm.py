@@ -36,6 +36,11 @@ class GeneticAlgorithm:
         self.is_pre_constraints_satisfied = lambda x: True
         self.tournament_size = 3
 
+        self.history = dict()  # to not calculate same fitness
+
+
+
+
     def default_fitness_function(self, genes):
         return sum(genes)
 
@@ -79,8 +84,12 @@ class GeneticAlgorithm:
     def calculate_fitnesses(self):
         """calculate fitnesses of self.current_generation"""
         for individual in self.current_generation:
-            # todo: do not forget to set fitness function
-            individual.fitness = self.fitness_function(individual.genes)
+            fitness = self.history.get(tuple(individual.genes), None)
+            if fitness is None:  # if individual is newborn then calculate its fitness
+                individual.fitness = self.fitness_function(individual.genes, calculate_signal=True)
+                self.history[tuple(individual.genes)] = individual.fitness
+            else: #otherwise just send do not calculate signal to fitness function
+                individual.fitness = self.fitness_function(individual.genes, calculate_signal=False)
 
     def sort_population(self):
         """sort self.current_generation according to fitnesses"""
