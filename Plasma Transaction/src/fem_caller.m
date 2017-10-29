@@ -18,15 +18,17 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
     % 6) Lprime value (comes from Energy_Calc function)
     % 7) x1,x2,x3,x4,x5, and x6 geometric independent variables
     % 8) Peak acceleration (comes from Energy_Calc function)
-
+ 
     
 
-    [Farm, J, mass] =FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]
+%     [Farm, J, mass] =FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]
+    
     
     tic
     x3=12.5-x1-x2;
+    [x1,x2,x3,x4,x5,x6]
 % === Real sim ===
-%     [Farm, J, mass] = FEA_Contact(x1, x2,x3, x4, x5, x6);%[F j m]]
+    [Farm, J, mass] = FEA_Contact(x1, x2,x3, x4, x5, x6);%[F j m]]
 % === Real sim ===
 
 % === Fake sim ===

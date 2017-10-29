@@ -109,11 +109,13 @@ if __name__ == "__main__":
     # fitness function saves calculation for each iteration
     # ga.fitness_function = bukin6_function
 
-    # ga.is_pre_constraints_satisfied = is_pre_constraints_satisfied
-    for generation in ga.run():
+    ga.is_pre_constraints_satisfied = is_pre_constraints_satisfied
+    for (iteration_num,generation) in enumerate(ga.run()):
+        print("Iteraton:",iteration_num)
+        print("Shape:",history_file.shape[0])
+
         history_file = update_history_file(history_dict, history_file)
         history_file.to_excel(history_filename)
-        print(ga.best_individual())
     # print(ga.best_individual())
     # actuals = [genom * mul for (genom, mul) in zip(ga.best_individual().genes, [11, 11, 48, 48, 48])]
     best = ga.best_individual()

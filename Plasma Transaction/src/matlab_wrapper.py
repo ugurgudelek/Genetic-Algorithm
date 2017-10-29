@@ -13,6 +13,7 @@ class MatlabWrapper:
 
     def fem_function(self, input_arr):
         # calls wrapper.m file
-        r = self.eng.wrapper(input_arr, stdout=self.out, stderr=self.err)[0]
+        # r = self.eng.wrapper(input_arr, stdout=self.out, stderr=self.err)[0]
+        r = self.eng.wrapper(input_arr)[0]
         r = list(map(float, r))
         return r

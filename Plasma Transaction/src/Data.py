@@ -7,6 +7,7 @@ class DataHolder:
         self.current_generation = Generation(0)
 
 
+
     def add_individual_to_current_generation(self, individual):
         self.current_generation.population.append(individual)
 
