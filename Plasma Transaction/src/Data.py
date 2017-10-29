@@ -47,3 +47,6 @@ class Individual:
             df['genom_'+str(idx)] = genom
 
         return df
+
+    def __str__(self):
+        return str(self.to_series())

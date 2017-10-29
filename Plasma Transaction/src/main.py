@@ -66,6 +66,8 @@ def fitness_function(genes):
     J_crit_norm = normalize(J_crit, J_max, J_min)
 
     E_norm = normalize(individual.energy, E_max, E_min)
+
+    print(individual)
     return individual.energy
 
 def update_history_file(history_dict, history_file):
