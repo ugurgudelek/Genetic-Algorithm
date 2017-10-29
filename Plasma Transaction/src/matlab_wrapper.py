@@ -4,7 +4,10 @@ import io
 
 class MatlabWrapper:
     def __init__(self):
-        self.eng = matlab.engine.start_matlab()
+        shared_sessions = matlab.engine.find_matlab()
+        if len(shared_sessions) == 0:
+            raise Exception("Open matlab with comsol first!")
+        self.eng = matlab.engine.connect_matlab(shared_sessions[0])
         self.out = io.StringIO()
         self.err = io.StringIO()
 

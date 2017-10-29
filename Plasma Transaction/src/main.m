@@ -24,7 +24,7 @@ var3=12.5-var1-var2;
 var4=6;
 var5=6;
 var6=6;
-showPlot=1;
+%showPlot=1;
 
 tic
 FEA_Results=FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]

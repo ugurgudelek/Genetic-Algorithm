@@ -1,4 +1,4 @@
-function [Fy_armature, Jcontact mass] = FEA_Contact(x1, x2, x3, x4, x5,x6)
+function [Fy_armature, Jcontact, mass] = FEA_Contact(x1, x2, x3, x4, x5,x6)
 %
 % FEA_Contact.m
 %

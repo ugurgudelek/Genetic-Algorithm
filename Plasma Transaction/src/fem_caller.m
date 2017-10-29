@@ -21,7 +21,7 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
 
     
 
-    % i.e FEA_Results=FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]
+    [Farm, J, mass] =FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]
     
     tic
     x3=12.5-x1-x2;
@@ -30,9 +30,9 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
 % === Real sim ===
 
 % === Fake sim ===
-    Farm = rand;
-    J = rand;
-    mass = rand;
+%     Farm = rand;
+%     J = rand;
+%     mass = rand;
 % === Fake sim ===
 
     [Energy, Lprime, acc_max, velocity]=Energy_Calc(Farm, mass);
