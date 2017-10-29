@@ -1,4 +1,4 @@
-
+import pandas as pd
 
 class DataHolder:
     def __init__(self):
@@ -31,3 +31,19 @@ class Individual:
 
 
         self.genes = genes
+
+    def to_series(self):
+        df = pd.Series()
+
+        df['f_armature'] = self.f_armature
+        df['j'] = self.j
+        df['mass'] = self.mass
+        df['energy'] = self.energy
+        df['Lprime'] = self.Lprime
+        df['acc_max'] = self.acc_max
+        df['velocity'] = self.velocity
+
+        for (idx,genom) in enumerate(self.genes):
+            df['genom_'+str(idx)] = genom
+
+        return df

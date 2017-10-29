@@ -1,6 +1,8 @@
 from matlab_wrapper import MatlabWrapper
 from GeneticAlgorithm import GeneticAlgorithm, Chromosome
 from Data import Individual
+import pandas as pd
+import os
 
 def is_pre_constraints_satisfied(genes):
     genes = convert_norm_to_actual(genes)
@@ -48,39 +50,68 @@ def parse_output(fem_output, genes):
 def normalize(value, maximum, minimum):
     return (value - minimum)/(maximum - minimum)
 
-history = dict()
+
 def fitness_function(genes):
     genes = convert_norm_to_actual(genes)
-    individual = history.get(tuple(genes), None)
+    individual = history_dict.get(tuple(genes), None)
 
     if individual is None:
         fem_output = matlab.fem_function(genes)
         individual = parse_output(fem_output, genes=genes)
-        history[tuple(genes)] = individual
+        history_dict[tuple(genes)] = individual
 
     J_crit, J_max, J_min = 4.6e9, 1.24e10, 1e8
-    E_max, E_min = 200,100
+    E_max, E_min = 200, 100
     J_norm = normalize(individual.j, J_max, J_min)
     J_crit_norm = normalize(J_crit, J_max, J_min)
 
     E_norm = normalize(individual.energy, E_max, E_min)
     return individual.energy
-# matlab handler
-matlab = MatlabWrapper()
+
+def update_history_file(history_dict, history_file):
+    # todo: fix below line
+    if history_file.shape[0] == len(history_dict):
+        return history_file
+
+    keys = list(history_dict.keys())
+    need_update_keys = keys[history_file.shape[0]:] # only new keys
+    for key in need_update_keys:
+        history_file = history_file.append(history_dict[key].to_series(), ignore_index=True)
+
+    return history_file
+
+def excel_to_history_dict(history_file, history_dict):
+    pass
+
 if __name__ == "__main__":
 
+    history_filename = 'history_file.xlsx'
+
+    # matlab handler
+    matlab = MatlabWrapper()
+
+    history_dict = dict()
+
+    if not os.path.exists(history_filename):
+        pd.DataFrame().to_excel(history_filename)
+
+    history_file = pd.read_excel(history_filename)
+
+    # initialize history_dict with history_file
 
 
     # genetic algorithm handler
-    ga = GeneticAlgorithm(generation_size=20, mutation_probability=0.1, maximise_fitness=True, genom_size=5)
+    ga = GeneticAlgorithm(population_size=20,generation_size=20, mutation_probability=0.2, maximise_fitness=True, genom_size=5)
     ga.fitness_function = fitness_function
     # define fitness function
     # fitness function saves calculation for each iteration
     # ga.fitness_function = bukin6_function
 
-    ga.is_pre_constraints_satisfied = is_pre_constraints_satisfied
+    # ga.is_pre_constraints_satisfied = is_pre_constraints_satisfied
     for generation in ga.run():
-        print(history.get(tuple(ga.best_individual().genes),0))
+        history_file = update_history_file(history_dict, history_file)
+        history_file.to_excel(history_filename)
+        print(ga.best_individual())
     # print(ga.best_individual())
     # actuals = [genom * mul for (genom, mul) in zip(ga.best_individual().genes, [11, 11, 48, 48, 48])]
     best = ga.best_individual()
