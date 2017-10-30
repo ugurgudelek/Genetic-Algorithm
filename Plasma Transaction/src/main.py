@@ -9,7 +9,7 @@ import os
 from operator import attrgetter
 import math
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def is_pre_constraints_satisfied(raw_genes):
     genes = convert_norm_to_actual(raw_genes)

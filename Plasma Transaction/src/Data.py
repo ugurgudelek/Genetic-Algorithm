@@ -87,12 +87,12 @@ class Individual:
         self.velocity = velocity
 
         J_CRITICAL, J_MAX, J_MIN = 4.6e9, 1.24e10, 0
-        E_MAX, E_MIN = 1.4e7, 0
+        E_MAX, E_MIN = 1e5, 0
         def calculate_inner_attributes(j, energy):
             J_norm = normalize(j, J_MAX, J_MIN)
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
-            fitness = energy - max(0, (J_norm - J_crit_norm))
+            fitness = E_norm - max(0, (J_norm - J_crit_norm))
 
             return J_norm, J_crit_norm, E_norm, fitness
 

@@ -1,6 +1,7 @@
 import random
 import copy
 from operator import attrgetter
+from tqdm import tqdm
 
 
 class GeneticAlgorithm:
@@ -84,7 +85,7 @@ class GeneticAlgorithm:
 
     def calculate_fitnesses(self):
         """calculate fitnesses of self.current_generation"""
-        for individual in self.current_generation:
+        for individual in tqdm(self.current_generation):
             fitness = self.history.get(tuple(individual.genes), None)
             if fitness is None:  # if individual is newborn then calculate its fitness
                 individual.fitness = self.fitness_function(individual.genes, calculate_signal=True)
