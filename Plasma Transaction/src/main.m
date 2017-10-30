@@ -27,12 +27,12 @@ var6=6;
 %showPlot=1;
 
 tic
-FEA_Results=FEA_Contact(1.9, 4.1,12.5-1.9-4.1, 6.4, 7.9, 5.1);%[F j m]]
+[Farm, J, mass]=FEA_Contact(9.4992,1.2580, 12.5-9.4992-1.2580,11.6196,11.7308,7.3801);%[F j m]]
 toc
 
-Farm=FEA_Results(1);
-J=FEA_Results(2);
-mass=FEA_Results(3);
+% Farm=FEA_Results(1);
+% J=FEA_Results(2);
+% mass=FEA_Results(3);
 
 [Energy Lprime acc_max Velocity]=Energy_Calc(Farm, mass);
 

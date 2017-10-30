@@ -106,7 +106,7 @@ model.geom('geom1').feature('wp1').geom.feature('e1').set('pos', {'var1+var2+var
 model.geom('geom1').feature('wp1').geom.feature('e1').set('semiaxes', {'var3' 'var5'});
 model.geom('geom1').feature('wp1').geom.create('del1', 'Delete');
 model.geom('geom1').feature('wp1').geom.feature('del1').selection('input').set('e1(1)', [1 2 3]);
-model.geom('geom1').feature('wp1').geom.feature('del1').selection('input').set('pol1(1)', [2 3 4 5]);
+model.geom('geom1').feature('wp1').geom.feature('del1').selection('input').set('pol1(1)', [2 3 4]);
 model.geom('geom1').feature('wp1').geom.create('r6', 'Rectangle');
 model.geom('geom1').feature('wp1').geom.feature('r6').set('size', {'layer_thickness' 'var4+var5+var6'});
 model.geom('geom1').feature('wp1').geom.feature('r6').set('pos', {'0' '100'});
@@ -173,9 +173,6 @@ model.variable('var1').set('Farm', 'mf.Forcey_50*4');
 model.view('view3').tag('view8');
 model.view('view4').tag('view29');
 model.view('view5').tag('view30');
-model.view('view1').hideObjects.create('hide1');
-model.view('view1').hideEntities.create('hide1');
-model.view('view1').hideEntities('hide1').set([1 2 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90]);
 model.view('view2').hideObjects.create('hide1');
 model.view.create('view5', 2);
 model.view.create('view31', 3);
@@ -599,8 +596,6 @@ model.mesh('mesh4').feature('bl2').feature('blp').selection.set([6 8 11]);
 model.result.table.create('tbl1', 'Table');
 
 model.view('view1').set('scenelight', 'off');
-model.view('view1').hideObjects('hide1').init(3);
-model.view('view1').hideObjects('hide1').set('fin(1)', [1 2]);
 model.view('view2').axis.set('abstractviewrratio', '1.1425492763519287');
 model.view('view2').axis.set('abstractviewlratio', '-1.0034732818603516');
 model.view('view2').axis.set('abstractviewxscale', '0.126447856426239');
@@ -1681,10 +1676,3 @@ Jcontact = Jcontact(4,1);
 mass = mpheval(model,'mass');
 mass = mass.d1;
 mass = mass(1,1);
-
-% if(showPlot == 1)
-%     figure
-%     mphplot(model,'pg6','rangenum',1);
-% end
-
-% out = [Fy_armature Jcontact mass];
