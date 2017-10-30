@@ -45,7 +45,8 @@ class GeneticAlgorithm:
         return sum(genes)
 
     def create_random_genom(self):
-        return random.random()
+        # genom rounded with 2 decimal point precision
+        return round(random.random(),2)
 
     def create_random_chromosome(self):
         """create random individual with the length of genom_size"""
@@ -184,28 +185,7 @@ class Chromosome:
 
 
 
-def sphere_function(xx):
-    xx = xx.genes
-    d = len(xx)
-    sum = 0
-    for ii in range(d):
-        xi = xx[ii]
-        sum += (xi ** 2)
-    return sum
 
-import math
-def bukin6_function(xx):
-    xx = xx.genes
-    x1,x2 = xx[0],xx[1]
-    x1 = x1*10 - 15
-    x2 = x2*6 - 3
-
-    term1 = 100 * math.sqrt(abs(x2 - 0.01 * (x1 ** 2)))
-    term2 = 0.01 * abs(x1 + 10)
-
-    y = term1 + term2
-
-    return y
 
 
 if __name__ == "__main__":

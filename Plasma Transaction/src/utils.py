@@ -1,4 +1,3 @@
-from Data import Individual
 
 class IdGenerator:
     def __init__(self):
@@ -28,10 +27,7 @@ def convert_actual_to_norm(arr):
     r[4] = arr[4] / 48.0
     return r
 
-def parse_output(id,fem_output, genes):
-    individual = Individual(id, fem_output[0],fem_output[1], fem_output[2],
-                            fem_output[3],fem_output[4],fem_output[5],fem_output[6], genes)
-    return individual
+
 
 def normalize(value, maximum, minimum):
     return (value - minimum)/(maximum - minimum)
