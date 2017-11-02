@@ -1,4 +1,4 @@
-from matlab_wrapper import MatlabWrapper
+from fake_matlab_wrapper import MatlabWrapper
 from GeneticAlgorithm import GeneticAlgorithm, Chromosome
 from Data import IterationStorage, parse_output
 
@@ -8,6 +8,7 @@ import pandas as pd
 import os
 from operator import attrgetter
 import math
+import pickle
 
 # import matplotlib.pyplot as plt
 
@@ -92,39 +93,64 @@ def bukin6_function(xx, calculate_signal):
     return y
     
 
+def resume(checkpoint_path):
+    """This function return 3 object if checkpoint exist
+    :returns iteration_storage, id_generator, ga"""
+    if os.path.exists(checkpoint_path):
+        return pd.read_pickle(checkpoint_path)
+    return None,None,None
 
-
+def always_true_constraint(raw_genes):
+    return True
 
 if __name__ == "__main__":
 
-    # history_filename = 'history_file.xlsx'
-
-    prefix_filename = "../history/iteration_history"
-    if not os.path.exists("../history"):
-        os.makedirs("../history")
+    START_OVER = 0
+    CHECKPOINT_PATH = "../checkpoint"
+    CHECKPOINT_FULL_PATH = CHECKPOINT_PATH + '/iter_idgen_ga_001.pkl'
+    HISTORY_PATH = '../history'
 
     # matlab handler
     matlab = MatlabWrapper()
-    iteration_storage = IterationStorage()
-    id_generator = utils.IdGenerator()
 
 
-    # genetic algorithm handler
-    ga = GeneticAlgorithm(population_size=20,generation_size=20,
-                          mutation_probability=0.3, maximise_fitness=True, genom_size=5)
+    if not os.path.exists(HISTORY_PATH):
+        os.makedirs(HISTORY_PATH)
+
+    # resume if history is available
+    if not os.path.exists(CHECKPOINT_PATH):
+        os.makedirs(CHECKPOINT_PATH)
+
+    iteration_storage, id_generator, ga = None,None,None
+
+    if not START_OVER:
+        iteration_storage, id_generator, ga = resume(CHECKPOINT_FULL_PATH)
+
+    else:
+        iteration_storage = IterationStorage()
+        id_generator = utils.IdGenerator()
+        # genetic algorithm handler
+        ga = GeneticAlgorithm(population_size=20,generation_size=20,
+                              mutation_probability=0.3, maximise_fitness=True, genom_size=5)
 
     # define fitness function
     ga.fitness_function = fitness_function
 
     ga.is_pre_constraints_satisfied = is_pre_constraints_satisfied
 
-    for (iteration_num, generation) in enumerate(ga.run()):
+    # find where to resume to resume ga from there.
+    resume_from = iteration_storage.iteration_num
+
+    for (iteration_num, generation) in enumerate(ga.run(resume_from), start=resume_from):
         iteration_storage.store_generation()
         iteration_storage.be_prepared_for_next_generation(iteration_num=iteration_num+1)
 
         iteration_storage.to_dataframe()
-        iteration_storage.dataframe.to_csv(prefix_filename+"_"+str(iteration_num)+".csv", index=False)
+        iteration_storage.dataframe.to_csv(HISTORY_PATH+"/iteration_"+str(iteration_num)+".csv", index=False)
 
+        # save nearly all class instances to resume later.
+        with open(CHECKPOINT_FULL_PATH, 'wb') as checkpoint_file:
+            pickle.dump((iteration_storage, id_generator, ga),checkpoint_file)
 
         print("Iteration:",iteration_num)
         print(ga.best_individual())

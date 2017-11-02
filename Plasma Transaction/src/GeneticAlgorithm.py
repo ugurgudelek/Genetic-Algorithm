@@ -155,13 +155,14 @@ class GeneticAlgorithm:
         self.calculate_fitnesses()
         self.sort_population()
 
-    def run(self):
+    def run(self, resume_from=0):
         """Endless loop to find solution"""
 
-        self.create_first_generation()
-        yield self.current_generation
+        if resume_from == 0:
+            self.create_first_generation()
+            yield self.current_generation
 
-        for iteration in range(self.generation_size):
+        for iteration in range(resume_from,self.generation_size):
             self.create_next_generation()
             yield self.current_generation
 
