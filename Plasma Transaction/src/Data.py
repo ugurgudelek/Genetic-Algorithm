@@ -92,7 +92,7 @@ class Individual:
             J_norm = normalize(j, J_MAX, J_MIN)
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
-            fitness = E_norm - max(0, (J_norm - J_crit_norm))
+            fitness = E_norm -100* max(0, (J_norm - J_crit_norm))
 
             return J_norm, J_crit_norm, E_norm, fitness
 

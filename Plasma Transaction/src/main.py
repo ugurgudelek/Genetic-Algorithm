@@ -1,4 +1,4 @@
-from fake_matlab_wrapper import MatlabWrapper
+from matlab_wrapper import MatlabWrapper
 from GeneticAlgorithm import GeneticAlgorithm, Chromosome
 from Data import IterationStorage, parse_output
 
@@ -105,7 +105,7 @@ def always_true_constraint(raw_genes):
 
 if __name__ == "__main__":
 
-    START_OVER = 0
+    START_OVER = 1
     CHECKPOINT_PATH = "../checkpoint"
     CHECKPOINT_FULL_PATH = CHECKPOINT_PATH + '/iter_idgen_ga_001.pkl'
     HISTORY_PATH = '../history'
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         id_generator = utils.IdGenerator()
         # genetic algorithm handler
         ga = GeneticAlgorithm(population_size=20,generation_size=20,
-                              mutation_probability=0.3, maximise_fitness=True, genom_size=5)
+                              mutation_probability=0.5, elitism_ratio=0.1,maximise_fitness=True, genom_size=5)
 
     # define fitness function
     ga.fitness_function = fitness_function
