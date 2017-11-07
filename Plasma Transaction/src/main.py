@@ -18,11 +18,11 @@ def is_pre_constraints_satisfied(raw_genes):
 
 
 
-    if x1 < 1 or x2 < 1 or x4 < 5 or x5 < 5 or x6 < 5:
+    if x1 < 3 or x2 < 3 or x4 < 5 or x5 < 5 or x6 < 5:
         # create new chromosome
         return False
 
-    if x1 + x2 > 11.5:
+    if x1 + x2 > 17:
         # create new chromosome
         return False
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         id_generator = utils.IdGenerator()
         # genetic algorithm handler
         ga = GeneticAlgorithm(population_size=20,generation_size=20,
-                              mutation_probability=0.5, elitism_ratio=0.1,maximise_fitness=True, genom_size=5)
+                              mutation_probability=0.5, elitism_ratio=0.1, maximise_fitness=True, genom_size=5)
 
     # define fitness function
     ga.fitness_function = fitness_function

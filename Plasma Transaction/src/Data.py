@@ -86,14 +86,21 @@ class Individual:
         self.acc_max = acc_max
         self.velocity = velocity
 
-        J_CRITICAL, J_MAX, J_MIN = 4.6e9, 1.24e10, 0
-        E_MAX, E_MIN = 1e5, 0
+        J_CRITICAL, J_MAX, J_MIN = 4.04e9, 5.2e9, 0
+        E_MAX, E_MIN = 7e5, 2.8e5
         def calculate_inner_attributes(j, energy):
             J_norm = normalize(j, J_MAX, J_MIN)
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
-            fitness = E_norm -100* max(0, (J_norm - J_crit_norm))
 
+            # fitness = E_norm -1000000* max(0, (J_norm - J_crit_norm))
+
+            if J_norm > J_crit_norm:  # if it melts
+                fitness = 0
+            else:
+                # todo: alpha, beta need to be determined
+                # fitness = alpha * E_norm + beta * (J_crit_norm - J_norm)
+                fitness = E_norm
             return J_norm, J_crit_norm, E_norm, fitness
 
         self.J_norm, self.J_crit_norm, self.E_norm, self.fitness = calculate_inner_attributes(self.j, self.energy)
@@ -117,7 +124,7 @@ class Individual:
 
         df['x1'] = self.genes[0]
         df['x2'] = self.genes[1]
-        df['x3'] = 12.5 - self.genes[0] - self.genes[1]
+        df['x3'] = 20 - self.genes[0] - self.genes[1]
         df['x4'] = self.genes[2]
         df['x5'] = self.genes[3]
         df['x6'] = self.genes[4]

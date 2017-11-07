@@ -25,10 +25,10 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
     
     
     tic
-    x3=12.5-x1-x2;
+    x3=20-x1-x2;
     [x1,x2,x3,x4,x5,x6]
 % === Real sim ===
-    [Farm, J, mass] = FEA_Contact(x1, x2,x3, x4, x5, x6);%[F j m]]
+    [Farm, J, mass] = FEA_Contact_Pegasus_bettermesh(x1, x2,x3, x4, x5, x6);%[F j m]]
 % === Real sim ===
 
 % === Fake sim ===

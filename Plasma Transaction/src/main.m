@@ -16,18 +16,20 @@
 % 6) Lprime value (comes from Energy_Calc function)
 % 7) x1,x2,x3,x4,x5, and x6 geometric independent variables
 % 8) Peak acceleration (comes from Energy_Calc function)
+% 7.3700    7.9200    4.7100    5.7600    8.1600   26.8800
+
+var1=2;
+var2=2;
+var3=20-var1-var2;
+var4=5;
+var5=5;
+var6=5;
 
 
-var1=6;
-var2=6;
-var3=12.5-var1-var2;
-var4=6;
-var5=6;
-var6=6;
 %showPlot=1;
 
 tic
-[Farm, J, mass]=FEA_Contact(9.4992,1.2580, 12.5-9.4992-1.2580,11.6196,11.7308,7.3801);%[F j m]]
+[Farm, J, mass]=FEA_Contact_Pegasus_bettermesh(var1,var2,var3,var4,var5,var6);%[F j m]]
 toc
 
 % Farm=FEA_Results(1);

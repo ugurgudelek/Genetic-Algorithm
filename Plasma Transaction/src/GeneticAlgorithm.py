@@ -126,6 +126,8 @@ class GeneticAlgorithm:
 
             if random.random() < self.mutation_probability:
                 child_1 = self.mutate(child_1)
+
+            if random.random() < self.mutation_probability:
                 child_2 = self.mutate(child_2)
 
             if self.is_pre_constraints_satisfied(child_1.genes):
