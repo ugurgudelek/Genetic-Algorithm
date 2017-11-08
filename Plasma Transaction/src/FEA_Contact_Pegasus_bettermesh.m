@@ -1689,7 +1689,7 @@ Fy_armature = Fy_armature(11,1);
 
 Jcontact = mpheval(model,'Jmax_norm_surface');
 Jcontact = Jcontact.d1;
-Jcontact = Jcontact(11,1);
+Jcontact = Jcontact(6,1);
 
 
 mass = mpheval(model,'mass');
