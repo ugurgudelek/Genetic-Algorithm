@@ -28,7 +28,7 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
     x3=20-x1-x2;
     [x1,x2,x3,x4,x5,x6]
 % === Real sim ===
-    [Farm, J, mass] = FEA_Contact_Pegasus_bettermesh(x1, x2,x3, x4, x5, x6);%[F j m]]
+    [Farm, J, mass, P_left,P_right] = FEA_Contact_Pegasus_withPJconstraint(x1, x2,x3, x4, x5, x6);%[F j m]]
 % === Real sim ===
 
 % === Fake sim ===
@@ -52,4 +52,6 @@ function fem_output = fem_caller(x1,x2,x4,x5,x6)
     fem_output(5) = Lprime;
     fem_output(6) = acc_max;
     fem_output(7) = velocity;
+    fem_output(8) = P_left;
+    fem_output(9) = P_right;
 end

@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     START_OVER = 1
     CHECKPOINT_PATH = "../checkpoint"
-    CHECKPOINT_FULL_PATH = CHECKPOINT_PATH + '/iter_idgen_ga_001.pkl'
+    CHECKPOINT_FULL_PATH = CHECKPOINT_PATH + '/iter_idgen_ga_with_pressure_001.pkl'
     HISTORY_PATH = '../history'
 
     # matlab handler

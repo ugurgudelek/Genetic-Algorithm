@@ -23,13 +23,13 @@ var2=2;
 var3=20-var1-var2;
 var4=5;
 var5=5;
-var6=5;
+var6=15;
 
 
 %showPlot=1;
 
 tic
-[Farm, J, mass]=FEA_Contact_Pegasus_bettermesh(var1,var2,var3,var4,var5,var6);%[F j m]]
+[Farm, J, mass, P1, P2]=FEA_Contact_Pegasus_withPJconstraint(var1,var2,var3,var4,var5,var6);%[F j m]]
 toc
 
 % Farm=FEA_Results(1);

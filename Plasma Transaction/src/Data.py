@@ -70,13 +70,23 @@ class GenerationStorage:
         return dataframe
 
 def parse_output(id, fem_output, raw_genes):
+    # fem output :
+    # Farm;
+    #J;
+    #mass;
+    #Energy;
+    #Lprime;
+    #acc_max;
+    #velocity;
+    #P_left;
+    #P_right;
     individual = Individual(id, fem_output[0], fem_output[1], fem_output[2],
-                            fem_output[3], fem_output[4], fem_output[5], fem_output[6], raw_genes)
+                            fem_output[3], fem_output[4], fem_output[5], fem_output[6],fem_output[7],fem_output[8], raw_genes)
     return individual
 
 class Individual:
     """individual signature of FEM model"""
-    def __init__(self, id, f_armature, j, mass, energy, Lprime, acc_max, velocity, raw_genes):
+    def __init__(self, id, f_armature, j, mass, energy, Lprime, acc_max, velocity, P_left, P_right, raw_genes):
         self.id = id
         self.f_armature = f_armature
         self.j = j
@@ -85,22 +95,29 @@ class Individual:
         self.Lprime = Lprime
         self.acc_max = acc_max
         self.velocity = velocity
+        self.P_left = P_left
+        self.P_right = P_right
 
         J_CRITICAL, J_MAX, J_MIN = 4.04e9, 5.2e9, 0
         E_MAX, E_MIN = 7e5, 2.8e5
+        P_LEFT_CRITICAL = 100e6
+        P_RIGHT_CRITICAL = 100e6
+        P_RIGHT_MAX=130e6
+        P_LEFT_MAX = 170e6
+
         def calculate_inner_attributes(j, energy):
             J_norm = normalize(j, J_MAX, J_MIN)
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
 
-            # fitness = E_norm -1000000* max(0, (J_norm - J_crit_norm))
+            fitness = E_norm - max(0, (J_norm - J_crit_norm))-max(0, ((self.P_left/P_LEFT_MAX) - (P_LEFT_CRITICAL/P_LEFT_MAX))-max(0, ((self.P_right/P_RIGHT_MAX)  - (P_RIGHT_CRITICAL/P_RIGHT_MAX) )))
 
-            if J_norm > J_crit_norm:  # if it melts
-                fitness = 0
-            else:
+            #if (J_norm > J_crit_norm) or (self.P_left > P_LEFT_CRITICAL) or (self.P_right > P_RIGHT_CRITICAL):  # if it melts
+            #    fitness = 0
+           # else:
                 # todo: alpha, beta need to be determined
                 # fitness = alpha * E_norm + beta * (J_crit_norm - J_norm)
-                fitness = E_norm
+            #    fitness = E_norm
             return J_norm, J_crit_norm, E_norm, fitness
 
         self.J_norm, self.J_crit_norm, self.E_norm, self.fitness = calculate_inner_attributes(self.j, self.energy)
@@ -136,6 +153,9 @@ class Individual:
         df['Lprime'] = self.Lprime
         df['acc_max'] = self.acc_max
         df['velocity'] = self.velocity
+
+        df['P_left'] = self.P_left
+        df['P_right'] = self.P_right
 
         df['J_norm'],df['J_crit_norm'],df['E_norm'],df['fitness']= self.J_norm, self.J_crit_norm, self.E_norm, self.fitness
 
