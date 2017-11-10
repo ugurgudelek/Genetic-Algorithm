@@ -102,15 +102,15 @@ class Individual:
         E_MAX, E_MIN = 7e5, 2.8e5
         P_LEFT_CRITICAL = 100e6
         P_RIGHT_CRITICAL = 100e6
-        P_RIGHT_MAX=130e6
-        P_LEFT_MAX = 170e6
+        P_RIGHT_MAX=150e6
+        P_LEFT_MAX = 2000e6
 
         def calculate_inner_attributes(j, energy):
             J_norm = normalize(j, J_MAX, J_MIN)
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
 
-            fitness = E_norm - max(0, (J_norm - J_crit_norm))-max(0, ((self.P_left/P_LEFT_MAX) - (P_LEFT_CRITICAL/P_LEFT_MAX))-max(0, ((self.P_right/P_RIGHT_MAX)  - (P_RIGHT_CRITICAL/P_RIGHT_MAX) )))
+            fitness = E_norm - max(0, (J_norm - J_crit_norm))-max(0, ((self.P_left/P_LEFT_MAX) - (P_LEFT_CRITICAL/P_LEFT_MAX)))-max(0, ((self.P_right/P_RIGHT_MAX) - (P_RIGHT_CRITICAL/P_RIGHT_MAX)))
 
             #if (J_norm > J_crit_norm) or (self.P_left > P_LEFT_CRITICAL) or (self.P_right > P_RIGHT_CRITICAL):  # if it melts
             #    fitness = 0
