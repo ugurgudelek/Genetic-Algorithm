@@ -131,7 +131,7 @@ if __name__ == "__main__":
         id_generator = utils.IdGenerator()
         # genetic algorithm handler
         ga = GeneticAlgorithm(population_size=20,generation_size=20,
-                              mutation_probability=0.5, elitism_ratio=0.1, maximise_fitness=True, genom_size=5)
+                              mutation_probability=0.7, elitism_ratio=0.05, maximise_fitness=True, genom_size=5)
 
     # define fitness function
     ga.fitness_function = fitness_function
