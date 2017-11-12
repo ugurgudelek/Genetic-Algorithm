@@ -110,7 +110,7 @@ class Individual:
             J_crit_norm = normalize(J_CRITICAL, J_MAX, J_MIN)
             E_norm = normalize(energy, E_MAX, E_MIN)
 
-            fitness = E_norm - max(0, (J_norm - J_crit_norm))-max(0, ((self.P_left/P_LEFT_MAX) - (P_LEFT_CRITICAL/P_LEFT_MAX)))-max(0, ((self.P_right/P_RIGHT_MAX) - (P_RIGHT_CRITICAL/P_RIGHT_MAX)))
+            fitness = 2*E_norm - 100*max(0, (J_norm - J_crit_norm))-max(0, ((self.P_left/P_LEFT_MAX) - (P_LEFT_CRITICAL/P_LEFT_MAX)))-max(0, ((self.P_right/P_RIGHT_MAX) - (P_RIGHT_CRITICAL/P_RIGHT_MAX)))
 
             #if (J_norm > J_crit_norm) or (self.P_left > P_LEFT_CRITICAL) or (self.P_right > P_RIGHT_CRITICAL):  # if it melts
             #    fitness = 0
