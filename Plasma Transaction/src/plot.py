@@ -24,11 +24,11 @@ def plot(data, which='fitness', iter_size = 20):
         plt.legend(bbox_to_anchor=(1.1, 1.05))
     bests = get_all_best(data, iter_size=20, which_one=0)[which].values
     plt.plot(bests)
-    plt.title(which)
+    plt.title('Mass of Armature (kg)')
     plt.show()
 
 print(os.getcwd())
-history = pd.read_csv('../history/history_fifth_run/iteration_20.csv')
+history = pd.read_csv('../history/history_sixth_run/iteration_20.csv')
 print(history.columns)
-plot(history, which='x2', iter_size=20)
+plot(history, which='mass', iter_size=20)
 print()
