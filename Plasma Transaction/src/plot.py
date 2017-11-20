@@ -17,18 +17,26 @@ def get_all_best(data, iter_size=20, which_one=0):
         bests = bests.append(iter_data.iloc[which_one], ignore_index=True)
     return bests
 
-def plot(data, which='fitness', iter_size = 20):
-    for i in range(20):
+def plot(data, which='fitness', iter_size = 20, title='', xlabel='', ylabel=''):
+
+    for i in range(iter_size):
         bests = get_all_best(data, iter_size=20, which_one=i)[which].values
-        plt.scatter(x= list(range(len(bests))), y=bests, label=i)
-        plt.legend(bbox_to_anchor=(1.1, 1.05))
+        sizes = [3*i for i in range(len(bests))]
+        if i == iter_size -1:
+            plt.scatter(x= list(range(len(bests))), y=bests, label='individual', c='b', s=sizes, alpha=0.2)
+        else:
+            plt.scatter(x=list(range(len(bests))), y=bests, c='b', s=sizes, alpha=0.2)
+
     bests = get_all_best(data, iter_size=20, which_one=0)[which].values
-    plt.plot(bests)
-    plt.title('Mass of Armature (kg)')
+    plt.plot(bests, c='r', label='fittest')
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend(loc=2) #bbox_to_anchor=(1.1, 1.05),
     plt.show()
 
 print(os.getcwd())
 history = pd.read_csv('../history/history_sixth_run/iteration_20.csv')
 print(history.columns)
-plot(history, which='mass', iter_size=20)
+plot(history, which='energy', iter_size=20, title=r'$x_1$', xlabel='x', ylabel='y')
 print()
