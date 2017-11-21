@@ -19,7 +19,7 @@ def get_all_best(data, iter_size=20, which_one=0):
         bests = bests.append(iter_data.iloc[which_one], ignore_index=True)
     return bests
 
-def plot(data, which='fitness', unit_func=None, iter_size = 20, title='', xlabel='Number of Iteration', ylabel='', fontsize=20, save_path='../plot', show=False):
+def plot(data, which='fitness', unit_func=None, iter_size = 20, title='', xlabel='Number of Iteration', ylabel='', fontsize=30, save_path='../plot', show=False):
     print('Plotting {}...'.format(which))
     fig = plt.figure(figsize=(15.0, 9.0))
     axes = fig.gca()
