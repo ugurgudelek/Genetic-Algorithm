@@ -53,7 +53,7 @@ def plot(data, which='fitness', unit_func=None, iter_size = 20, title='', xlabel
     plt.title(title, fontsize=fontsize)
     plt.xlabel(xlabel, fontsize=fontsize)
     plt.ylabel(ylabel, fontsize=fontsize)
-    plt.legend(loc=2)  # bbox_to_anchor=(1.1, 1.05)
+    plt.legend(loc=2, fontsize=20)  # bbox_to_anchor=(1.1, 1.05)
 
     # set axis to Integer
     axes.get_yaxis().set_major_locator(MaxNLocator(integer=True))
@@ -78,10 +78,10 @@ plot(history, which='x4',      title=r'$x_4$',                                  
 plot(history, which='x5',      title=r'$x_5$',                                       ylabel=r'$x_5(mm)$')
 plot(history, which='x6',      title=r'$x_6$',                                       ylabel=r'$x_6(mm)$')
 plot(history, which='energy',  title='Muzzle Kinetic Energy',                        ylabel='Muzzle Kinetic Energy (kJ)', unit_func=lambda x: x/1e3)
-plot(history, which='j',       title='Maximum Current Density on Contact Surface',   ylabel='Maximum Current Density on Contact Surface (A/$m^2$)')
+plot(history, which='j',       title='Maximum Current Density on Contact Surface',   ylabel='Current Density (A/$m^2$)')
 plot(history, which='Lprime',  title='Inductance Gradient',                          ylabel='Inductance Gradient ($\mu$H/m)', unit_func=lambda x: x*1e6)
 plot(history, which='mass',    title='Mass of Armature',                             ylabel='Mass of Armature (g)', unit_func=lambda x: x*1e3)
-plot(history, which='P_left',  title='Maximum Pressure on Contact Surface',          ylabel='Maximum Pressure on Contact Surface (MPa)', unit_func=lambda x: x/1e6)
-plot(history, which='P_right', title='Maximum Pressure on Inner Surface',            ylabel='Maximum Pressure on Inner Surface (MPa)', unit_func=lambda x: x/1e6)
+plot(history, which='P_left',  title='Maximum Pressure on Contact Surface',          ylabel='Pressure (MPa)', unit_func=lambda x: x/1e6)
+plot(history, which='P_right', title='Maximum Pressure on Inner Surface',            ylabel='Pressure (MPa)', unit_func=lambda x: x/1e6)
 plot(history, which='velocity',title='Velocity',                                     ylabel='Velocity (m/s)')
 print()
